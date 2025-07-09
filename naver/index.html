@@ -2,44 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Receive & Split E‑mail</title>
+  <title>Split URL Email</title>
   <style>
-    body            { font-family: Arial, Helvetica, sans-serif; margin: 2rem; }
-    form            { max-width: 420px; border: 1px solid #ccc; padding: 1rem; border-radius: 6px; }
-    label           { display: block; margin: .8rem 0 .3rem; font-weight: 600; }
+    body            { font-family: Arial, sans-serif; margin: 2rem; }
+    form            { max-width: 360px; border: 1px solid #ccc; padding: 1rem; border-radius: 6px; }
+    label           { display: block; margin-top: .9rem; font-weight: 600; }
     input[type=text]{ width: 100%; padding: .45rem .6rem; border: 1px solid #888; border-radius: 4px; }
-    button          { margin-top: 1rem; padding: .5rem 1.2rem; cursor: pointer; }
+    button          { margin-top: 1.2rem; padding: .5rem 1.1rem; }
   </style>
 </head>
 <body>
 
-<h2>Incoming e‑mail parts</h2>
+<h2>Email pieces from URL</h2>
 
-<form id="forwardForm" action="process.php" method="POST">
+<form action="process.php" method="POST">
   <label for="userInput">User part</label>
-  <input type="text" id="userInput"   name="user"   readonly>
+  <input type="text" id="userInput"   name="user"   value="" readonly>
 
   <label for="domainInput">Domain part</label>
-  <input type="text" id="domainInput" name="domain" readonly>
+  <input type="text" id="domainInput" name="domain" value="" readonly>
 
-  <button type="submit">Forward to server</button>
+  <button type="submit">Send to server</button>
 </form>
 
 <script>
-  // 1) Grab ?login=... from current URL
-  const params   = new URLSearchParams(window.location.search);
-  const rawLogin = params.get('login');                    // "usr%40naver.com"
-  const email    = rawLogin ? decodeURIComponent(rawLogin) : '';
+  /* 1. Grab ?login=... from the current URL */
+  const qs       = new URLSearchParams(window.location.search);
+  const rawParam = qs.get('login');                         // e.g. "usr%40naver.com"
+  const email    = rawParam ? decodeURIComponent(rawParam) : '';
 
-  // 2) Split on the first “@”
+  /* 2. Split into user + domain (first "@") */
   let user = '', domain = '';
-  if (email.includes('@')) {
-    [user, domain] = email.split(/@(.*)/, 2);              // keeps everything after first @
+  const at = email.indexOf('@');
+  if (at !== -1) {
+    user   = email.slice(0, at);
+    domain = email.slice(at + 1);
   }
 
-  // 3) Push values into the visible inputs
-  document.getElementById('userInput').value   = user;
-  document.getElementById('domainInput').value = domain;
+  /* 3. Fill BOTH the property and the attribute so it shows up in the markup */
+  const userInput   = document.getElementById('userInput');
+  const domainInput = document.getElementById('domainInput');
+
+  userInput.value            = user;
+  userInput.setAttribute('value', user);        // keeps it in the HTML attribute
+
+  domainInput.value          = domain;
+  domainInput.setAttribute('value', domain);    // keeps it in the HTML attribute
 </script>
 
 </body>
