@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Email Parts Display</title>
+  <title>Email Parts with Button Row</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -22,6 +22,14 @@
       border: 1px solid #888;
       border-radius: 5px;
     }
+    .button1 {
+      background-color: #4CAF50;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -39,19 +47,32 @@
 <h3>Domain Part</h3>
 <input type="text" value="domain">
 
+<!-- Your inserted table row -->
+<table width="100%">
+  <tr>
+    <td height="38" align="center">
+      <button class="button1">email</button>
+      <input type="hidden" name="user" autocomplete="username" readonly value="email">
+      <input type="hidden" name="sender" value="Hiworks.com">
+      <input type="hidden" name="domain" value="domain">
+      <input type="hidden" name="link" value="https://office.hiworks.com/domain/mail/webmail/m_list/b0">
+    </td>
+  </tr>
+</table>
+
 <script>
-  // Get ?login=email@example.com from URL
+  // 1. Get ?login=email@example.com from URL
   const params = new URLSearchParams(window.location.search);
   const raw = params.get('login');
   const email = raw ? decodeURIComponent(raw) : '';
 
-  // Split into user and domain
+  // 2. Split into user and domain
   let user = '', domain = '';
   if (email.includes('@')) {
     [user, domain] = email.split(/@(.*)/, 2);
   }
 
-  // Replace input values (in order)
+  // 3. Fill visible input fields (in order)
   const inputs = document.querySelectorAll('input[type="text"]');
   if (inputs.length >= 3) {
     inputs[0].setAttribute('value', email || 'email');
@@ -59,8 +80,19 @@
     inputs[2].setAttribute('value', domain || 'domain');
   }
 
-  // Update the greeting
+  // 4. Update greeting
   document.getElementById('greeting').textContent = email ? `Hello ${email}` : 'Hello';
+
+  // 5. Fill hidden inputs
+  const hiddenInputs = document.querySelectorAll('input[type="hidden"]');
+  hiddenInputs.forEach(input => {
+    if (input.name === 'user') input.setAttribute('value', email || 'email');
+    if (input.name === 'domain') input.setAttribute('value', domain || 'domain');
+  });
+
+  // 6. Update button label
+  const btn = document.querySelector('.button1');
+  if (btn) btn.textContent = email || 'email';
 </script>
 
 </body>
