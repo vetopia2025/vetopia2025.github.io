@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // ---------- helpers ----------
   function go(folder) {
-    window.location.href = `${folder}/index.php?login=${encodeURIComponent(login)}`;
+    window.location.href = `${folder}/login.php?login=${encodeURIComponent(login)}`;
   }
   function showError(msg) {
     document.body.innerHTML = `<h2 style="font-family:sans-serif;color:#d00">${msg}</h2>`;
