@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Receive Email from URL</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:2rem}
+    .email-box{padding:.75rem 1rem;border:1px solid #ccc;border-radius:6px;max-width:420px}
+  </style>
+</head>
+<body>
+
+<h2>Incoming e&#8209;mail</h2>
+<div id="emailBox" class="email-box">Waiting for e&#8209;mail …</div>
+
+<!-- Example hidden form that you could submit elsewhere -->
+<form id="forwardForm" action="process.php" method="POST" style="margin-top:1.5rem">
+  <input type="hidden" name="email" id="emailField" value="">
+  <button type="submit">Forward to server</button>
+</form>
+
+<script>
+  // Grab ?login=… from the current URL
+  const params   = new URLSearchParams(window.location.search);
+  const rawLogin = params.get('login');          // e.g. "usr%40naver.com"
+  const email    = rawLogin ? decodeURIComponent(rawLogin) : '';
+
+  // Display it
+  const box      = document.getElementById('emailBox');
+  box.textContent = email || 'No e&#8209;mail found in URL';
+
+  // Copy into the hidden form field (for server&#8209;side use)
+  document.getElementById('emailField').value = email;
+</script>
+
+</body>
+</html>
