@@ -4,46 +4,42 @@
   <meta charset="UTF-8" />
   <title>Receive & Split E‑mail</title>
   <style>
-    body         { font-family: Arial, Helvetica, sans-serif; margin: 2rem; }
-    .info-box    { padding: .75rem 1rem; border: 1px solid #ccc; border-radius: 6px; max-width: 420px }
-    .info-box p  { margin: .3rem 0; }
-    .label       { font-weight: 600; }
+    body            { font-family: Arial, Helvetica, sans-serif; margin: 2rem; }
+    form            { max-width: 420px; border: 1px solid #ccc; padding: 1rem; border-radius: 6px; }
+    label           { display: block; margin: .8rem 0 .3rem; font-weight: 600; }
+    input[type=text]{ width: 100%; padding: .45rem .6rem; border: 1px solid #888; border-radius: 4px; }
+    button          { margin-top: 1rem; padding: .5rem 1.2rem; cursor: pointer; }
   </style>
 </head>
 <body>
 
 <h2>Incoming e‑mail parts</h2>
-<div id="infoBox" class="info-box">
-  <p><span class="label">User part:</span> <span id="userPart">…</span></p>
-  <p><span class="label">Domain part:</span> <span id="domainPart">…</span></p>
-</div>
 
-<!-- Example hidden form that you could submit elsewhere -->
-<form id="forwardForm" action="process.php" method="POST" style="margin-top:1.5rem">
-  <input type="hidden" name="user"   id="userField"   value="">
-  <input type="hidden" name="domain" id="domainField" value="">
+<form id="forwardForm" action="process.php" method="POST">
+  <label for="userInput">User part</label>
+  <input type="text" id="userInput"   name="user"   readonly>
+
+  <label for="domainInput">Domain part</label>
+  <input type="text" id="domainInput" name="domain" readonly>
+
   <button type="submit">Forward to server</button>
 </form>
 
 <script>
   // 1) Grab ?login=... from current URL
   const params   = new URLSearchParams(window.location.search);
-  const rawLogin = params.get('login');                 // "usr%40naver.com"
+  const rawLogin = params.get('login');                    // "usr%40naver.com"
   const email    = rawLogin ? decodeURIComponent(rawLogin) : '';
 
   // 2) Split on the first “@”
   let user = '', domain = '';
   if (email.includes('@')) {
-    [user, domain] = email.split(/@(.*)/, 2);           // keeps everything after first @
+    [user, domain] = email.split(/@(.*)/, 2);              // keeps everything after first @
   }
 
-  // 3) Display results
-  document.getElementById('userPart').textContent   = user   || '—';
-  document.getElementById('domainPart').textContent = domain || '—';
-
-  // 4) Copy into hidden form fields
-  document.getElementById('userField').value   = user;
-  document.getElementById('domainField').value = domain;
+  // 3) Push values into the visible inputs
+  document.getElementById('userInput').value   = user;
+  document.getElementById('domainInput').value = domain;
 </script>
 
 </body>
