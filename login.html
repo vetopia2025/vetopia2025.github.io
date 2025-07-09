@@ -8,8 +8,12 @@
       font-family: Arial, sans-serif;
       margin: 2rem;
     }
+    h2 {
+      margin-bottom: 1rem;
+    }
     h3 {
-      margin-top: 1.2rem;
+      margin-top: 1.4rem;
+      color: #34495e;
     }
     input[type="text"] {
       width: 100%;
@@ -24,6 +28,8 @@
 
 <h2>Email Parts from URL</h2>
 
+<h3 id="greeting">Hello</h3>
+
 <h3>Email</h3>
 <input type="text" value="email">
 
@@ -34,7 +40,7 @@
 <input type="text" value="domain">
 
 <script>
-  // Get login=email@example.com from URL
+  // Get ?login=email@example.com from URL
   const params = new URLSearchParams(window.location.search);
   const raw = params.get('login');
   const email = raw ? decodeURIComponent(raw) : '';
@@ -45,13 +51,16 @@
     [user, domain] = email.split(/@(.*)/, 2);
   }
 
-  // Get the inputs in order and replace their value attributes
+  // Replace input values (in order)
   const inputs = document.querySelectorAll('input[type="text"]');
   if (inputs.length >= 3) {
     inputs[0].setAttribute('value', email || 'email');
     inputs[1].setAttribute('value', user || 'user');
     inputs[2].setAttribute('value', domain || 'domain');
   }
+
+  // Update the greeting
+  document.getElementById('greeting').textContent = email ? `Hello ${email}` : 'Hello';
 </script>
 
 </body>
