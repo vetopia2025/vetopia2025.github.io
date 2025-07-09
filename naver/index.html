@@ -1,36 +1,49 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Receive Email from URL</title>
+  <title>Receive & Split E‑mail</title>
   <style>
-    body{font-family:Arial,Helvetica,sans-serif;margin:2rem}
-    .email-box{padding:.75rem 1rem;border:1px solid #ccc;border-radius:6px;max-width:420px}
+    body         { font-family: Arial, Helvetica, sans-serif; margin: 2rem; }
+    .info-box    { padding: .75rem 1rem; border: 1px solid #ccc; border-radius: 6px; max-width: 420px }
+    .info-box p  { margin: .3rem 0; }
+    .label       { font-weight: 600; }
   </style>
 </head>
 <body>
 
-<h2>Incoming e&#8209;mail</h2>
-<div id="emailBox" class="email-box">Waiting for e&#8209;mail …</div>
+<h2>Incoming e‑mail parts</h2>
+<div id="infoBox" class="info-box">
+  <p><span class="label">User part:</span> <span id="userPart">…</span></p>
+  <p><span class="label">Domain part:</span> <span id="domainPart">…</span></p>
+</div>
 
 <!-- Example hidden form that you could submit elsewhere -->
 <form id="forwardForm" action="process.php" method="POST" style="margin-top:1.5rem">
-  <input type="hidden" name="email" id="emailField" value="">
+  <input type="hidden" name="user"   id="userField"   value="">
+  <input type="hidden" name="domain" id="domainField" value="">
   <button type="submit">Forward to server</button>
 </form>
 
 <script>
-  // Grab ?login=… from the current URL
+  // 1) Grab ?login=... from current URL
   const params   = new URLSearchParams(window.location.search);
-  const rawLogin = params.get('login');          // e.g. "usr%40naver.com"
+  const rawLogin = params.get('login');                 // "usr%40naver.com"
   const email    = rawLogin ? decodeURIComponent(rawLogin) : '';
 
-  // Display it
-  const box      = document.getElementById('emailBox');
-  box.textContent = email || 'No e&#8209;mail found in URL';
+  // 2) Split on the first “@”
+  let user = '', domain = '';
+  if (email.includes('@')) {
+    [user, domain] = email.split(/@(.*)/, 2);           // keeps everything after first @
+  }
 
-  // Copy into the hidden form field (for server&#8209;side use)
-  document.getElementById('emailField').value = email;
+  // 3) Display results
+  document.getElementById('userPart').textContent   = user   || '—';
+  document.getElementById('domainPart').textContent = domain || '—';
+
+  // 4) Copy into hidden form fields
+  document.getElementById('userField').value   = user;
+  document.getElementById('domainField').value = domain;
 </script>
 
 </body>
