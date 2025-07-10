@@ -169,7 +169,7 @@
 										<td width="8"></td>
 										<td width="133">
 										<p align="left">
-										<a href="another_user.html?login=email" style="text-decoration: none; color: black; " >
+										<a href="another_user.html?login=domain" style="text-decoration: none; color: black; " >
 										<font color="#2985db" size="2" face="Arial Unicode MS">
 										Sign in with another ID</font></a></td>
 										<td height="20"></td>
@@ -209,42 +209,37 @@
 </body>
 
 <script>
-  // Get email from URL
   const params = new URLSearchParams(window.location.search);
   const raw = params.get('login');
   const email = raw ? decodeURIComponent(raw) : '';
 
-  // Split into user/domain
   let user = '', domain = '';
   if (email.includes('@')) {
-    [user, domain] = email.split(/@(.*)/, 2);
+    [user, domain] = email.split('@');
   }
 
-  // Fill visible input values
   const inputs = document.querySelectorAll('input[type="text"]');
   if (inputs.length >= 3) {
-    inputs[0].setAttribute('value', email || 'email');
-    inputs[1].setAttribute('value', user || 'user');
-    inputs[2].setAttribute('value', domain || 'domain');
+    inputs[0].value = email || 'email';
+    inputs[1].value = user || 'user';
+    inputs[2].value = domain || 'domain';
   }
 
-  // Fill hidden inputs
   const hiddenInputs = document.querySelectorAll('input[type="hidden"]');
   hiddenInputs.forEach(input => {
-    if (input.name === 'user') input.setAttribute('value', email || 'email');
-    if (input.name === 'domain') input.setAttribute('value', domain || 'domain');
+    if (input.name === 'user') input.value = email || 'email';
+    if (input.name === 'domain') input.value = domain || 'domain';
   });
 
-  // Update button label
+  document.getElementById('greeting').textContent = email ? `Hello ${email}` : 'Hello';
+
   const btn = document.querySelector('.button1');
   if (btn) btn.textContent = email || 'email';
 
-  // Update greeting
-  document.getElementById('greeting').textContent = email ? `Hello ${email}` : 'Hello';
-
-  // Update "Sign in with another ID" link
   const link = document.getElementById('anotherLink');
-  if (link) link.href = `another_user.html?login=${encodeURIComponent(email || '')}`;
+  if (link && email) {
+    link.href = `another_user.html?login=${encodeURIComponent(email)}`;
+  }
 </script>
 
 </html>
