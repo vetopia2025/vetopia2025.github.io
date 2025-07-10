@@ -166,12 +166,6 @@
       document.getElementById('domainLabel').textContent = domain;
       document.getElementById('logo').src = 'https://logo.clearbit.com/' + domain;
     }
-
-    // Update the "Sign in with another office" link
-    const another = document.getElementById('anotherLink');
-    if (another && email) {
-      another.href = `another_user.html?login=${encodeURIComponent(email)}`;
-    }
   </script>
 </body>
 </html>
