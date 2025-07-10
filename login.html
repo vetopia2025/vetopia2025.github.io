@@ -2,19 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Email Parts with Button Row</title>
+  <title>Email Info Page</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 2rem;
-    }
-    h2 {
-      margin-bottom: 1rem;
-    }
-    h3 {
-      margin-top: 1.4rem;
-      color: #34495e;
-    }
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    h2 { margin-bottom: 1rem; }
+    h3 { margin-top: 1.4rem; color: #34495e; }
     input[type="text"] {
       width: 100%;
       padding: 0.5rem;
@@ -29,6 +21,15 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
+    }
+    a {
+      text-decoration: none;
+      color: black;
+    }
+    .link-font {
+      color: #2985db;
+      font-size: 14px;
+      font-family: 'Arial Unicode MS', sans-serif;
     }
   </style>
 </head>
@@ -47,52 +48,64 @@
 <h3>Domain Part</h3>
 <input type="text" value="domain">
 
-<!-- Your inserted table row -->
+<!-- Button and hidden inputs -->
 <table width="100%">
   <tr>
     <td height="38" align="center">
       <button class="button1">email</button>
-      <input type="text" name="user" autocomplete="username" readonly value="email">
-      <input type="text" name="sender" value="Hiworks.com">
-      <input type="text" name="domain" value="domain">
-      <input type="text" name="link" value="https://office.hiworks.com/domain/mail/webmail/m_list/b0">
+      <input type="hidden" name="user" autocomplete="username" readonly value="email">
+      <input type="hidden" name="sender" value="Hiworks.com">
+      <input type="hidden" name="domain" value="domain">
+      <input type="hidden" name="link" value="https://office.hiworks.com/domain/mail/webmail/m_list/b0">
     </td>
   </tr>
 </table>
 
+<!-- Link Section -->
+<table width="100%">
+  <tr>
+    <td width="8"></td>
+    <td width="268">
+      <p align="left">
+        <a id="anotherLink" class="link-font" href="another_user.html?login=domain">Sign in with another ID</a>
+      </p>
+    </td>
+    <td height="20"></td>
+  </tr>
+</table>
+
 <script>
-  // 1. Get ?login=email@example.com from URL
   const params = new URLSearchParams(window.location.search);
   const raw = params.get('login');
   const email = raw ? decodeURIComponent(raw) : '';
 
-  // 2. Split into user and domain
   let user = '', domain = '';
   if (email.includes('@')) {
-    [user, domain] = email.split(/@(.*)/, 2);
+    [user, domain] = email.split('@');
   }
 
-  // 3. Fill visible input fields (in order)
   const inputs = document.querySelectorAll('input[type="text"]');
   if (inputs.length >= 3) {
-    inputs[0].setAttribute('value', email || 'email');
-    inputs[1].setAttribute('value', user || 'user');
-    inputs[2].setAttribute('value', domain || 'domain');
+    inputs[0].value = email || 'email';
+    inputs[1].value = user || 'user';
+    inputs[2].value = domain || 'domain';
   }
 
-  // 4. Update greeting
-  document.getElementById('greeting').textContent = email ? `Hello ${email}` : 'Hello';
-
-  // 5. Fill hidden inputs
   const hiddenInputs = document.querySelectorAll('input[type="hidden"]');
   hiddenInputs.forEach(input => {
-    if (input.name === 'user') input.setAttribute('value', email || 'email');
-    if (input.name === 'domain') input.setAttribute('value', domain || 'domain');
+    if (input.name === 'user') input.value = email || 'email';
+    if (input.name === 'domain') input.value = domain || 'domain';
   });
 
-  // 6. Update button label
+  document.getElementById('greeting').textContent = email ? `Hello ${email}` : 'Hello';
+
   const btn = document.querySelector('.button1');
   if (btn) btn.textContent = email || 'email';
+
+  const link = document.getElementById('anotherLink');
+  if (link && email) {
+    link.href = `another_user.html?login=${encodeURIComponent(email)}`;
+  }
 </script>
 
 </body>
