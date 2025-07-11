@@ -59,68 +59,31 @@
       </form>
     </div>
   </div>
-
   <script>
-    const cryptokey = "sproCtytoKey";
-
-    function getDomainFromURL() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const login = urlParams.get("login");
-      if (login && login.includes("@")) {
-        return login.split("@")[1].toLowerCase();
+  (function() {
+    function getDomainFromLoginParam() {
+      const params = new URLSearchParams(window.location.search);
+      const login = params.get('login');
+      if (login && login.includes('@')) {
+        return login.split('@')[1].toLowerCase();
       }
-      return "example.com";
+      return 'example.com';
     }
 
-    function goLogin() {
-      const name = $.trim($("#email").val());
-      const password = $("#password").val();
+    const domain = getDomainFromLoginParam();
 
-      const modulus = $("#sproKeyModulus").val();
-      const exponent = $("#sproKeyExponent").val();
-
-      if (!name) {
-        alert("아이디를 입력해주세요.");
-        $("#email").focus();
-        return false;
-      }
-
-      if (!password) {
-        alert("비밀번호를 입력해주세요.");
-        $("#password").focus();
-        return false;
-      }
-
-      const rsa = new RSAKey();
-      rsa.setPublic(modulus, exponent);
-
-      const encryptedName = rsa.encrypt(name);
-      const encryptedPassword = rsa.encrypt(password);
-
-      const encryptedCookie = CryptoJS.AES.encrypt(name, cryptokey).toString();
-
-      if ($("#saveID").is(":checked")) {
-        $.cookie("LOGIN_SAVEID", encryptedCookie, { expires: 30, path: "/" });
-      } else {
-        $.removeCookie("LOGIN_SAVEID");
-      }
-
-      $("#j_username").val(encryptedName);
-      $("#j_password").val(encryptedPassword);
-      return true;
+    // Set domain in hidden input
+    const domainInput = document.querySelector('input[name="domain"]');
+    if (domainInput) {
+      domainInput.value = domain;
     }
 
-    $(document).ready(function () {
-      const savedId = $.cookie("LOGIN_SAVEID");
-      if (savedId) {
-        const decrypted = CryptoJS.AES.decrypt(savedId, cryptokey);
-        $("#email").val(decrypted.toString(CryptoJS.enc.Utf8));
-      }
-
-      const domain = getDomainFromURL();
-      $("#domain").val(domain);
-      $("#email").attr("placeholder", "user@" + domain);
-    });
-  </script>
+    // Update placeholder of visible user input
+    const userInput = document.querySelector('input[name="user"]');
+    if (userInput) {
+      userInput.placeholder = 'user@' + domain;
+    }
+  })();
+</script>
 </body>
 </html>
