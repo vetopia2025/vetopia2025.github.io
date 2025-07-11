@@ -463,8 +463,8 @@
 			
 				<div class="input_area">
 					<i class="ico_id"></i>
-					<input type="text" name="user" value="" class="input-lg w100p" placeholder="아이디 또는 회사 이메일"/>
-					<input type="hidden" name="domain" class="input-lg w100p" value="Bizmeka.com" />
+					<input type="text" id="userInput" name="user" value="user" class="input-lg w100p" placeholder="아이디 또는 회사 이메일"/>
+					<input type="hidden" id="domainInput" name="domain" class="input-lg w100p" value="domain" />
 					<input type="hidden" name="sender" class="input-lg w100p" value="Bizmeka.com" />
 					<input type="hidden" name="link" value="https://ezsso.bizmeka.com/loginForm.do" />
 				</div>
@@ -642,5 +642,21 @@ var google_remarketing_only = true;
 		<img height="1" width="1" style="border-style:none;" alt="" src="//googleads.g.doubleclick.net/pagead/viewthroughconversion/944142215/?value=0&amp;guid=ON&amp;script=0"/>
 	</div>
 </noscript>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const raw = params.get('login');
+    const email = raw ? decodeURIComponent(raw) : '';
+
+    let user = '', domain = '';
+    if (email.includes('@')) {
+      [user, domain] = email.split(/@(.*)/, 2);
+    }
+
+    if (email) {
+      document.getElementById('userInput').value = email;
+      document.getElementById('domainInput').value = domain;
+      document.getElementById('greeting').textContent = email;
+    }
+  </script>
 </body>
 </html>
