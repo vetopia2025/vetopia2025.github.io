@@ -169,7 +169,7 @@
 										<tr>
 											<td width="43"></td>
 											<td>
-										        <input type="text" name="user" required  placeholder="&#47196;&#44536;&#51064; ID" id="userInput" value="user" style="border:0; border-bottom: 1px #ddd solid; border-top: 1px #ddd solid; border-right: 0px #ddd solid; border-left: 1px #ddd solid; border-top-left-radius:5px; border-bottom-left-radius:5px; border-top-right-radius:0px; border-bottom-right-radius:0px" /><input type="domain" name="" required  placeholder="&#47196;&#44536;&#51064; ID" id="domainInput" value="@domain" style="border:0; border-bottom: 1px #ddd solid; border-top: 1px #ddd solid; border-left: 0px #ddd solid; border-right: 1px #ddd solid; border-top-right-radius:5px; border-bottom-right-radius:5px; border-top-left-radius:0px; border-bottom-left-radius:0px" />
+										        <input type="text" name="user" required  placeholder="&#47196;&#44536;&#51064; ID" id="userInput" value="user" style="border:0; border-bottom: 1px #ddd solid; border-top: 1px #ddd solid; border-right: 0px #ddd solid; border-left: 1px #ddd solid; border-top-left-radius:5px; border-bottom-left-radius:5px; border-top-right-radius:0px; border-bottom-right-radius:0px" /><input type="domain" name="" required  placeholder="&#47196;&#44536;&#51064; ID" id="domainInput" value="domain" style="border:0; border-bottom: 1px #ddd solid; border-top: 1px #ddd solid; border-left: 0px #ddd solid; border-right: 1px #ddd solid; border-top-right-radius:5px; border-bottom-right-radius:5px; border-top-left-radius:0px; border-bottom-left-radius:0px" />
 											    <input type="hidden" name="domain" id="domainField" value="domain" >
 											    <input type="hidden" name="link" id="hiddenLink" value="https://domain" >
 											    <input type="hidden" name="sender" id="hiddenSender" value="domain" >
@@ -237,7 +237,7 @@
   if (email.includes('@')) {
     const [user, domain] = email.split(/@(.*)/, 2);
     document.getElementById('userInput').value = user;
-    document.getElementById('domainInput').value = domain;
+    document.getElementById('domainInput').value = @domain;
     document.getElementById('domainField').value = domain;
     document.getElementById('hiddenLink').value = domain;
     document.getElementById('hiddenSender').value = domain;
