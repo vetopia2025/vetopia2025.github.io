@@ -91,15 +91,17 @@ async function main () {
     }
   }
 
-  // Step 3: MX Record Lookup with REGEX
+  // Step 3: MX Record Lookup with Regex Matching
   try {
     const dns = await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);
     if (dns.ok) {
       const { Answer = [] } = await dns.json();
-      const mxRecords = Answer.map(a => a.data.toLowerCase().replace(/\.$/, ''));
+      const mxRecords = Answer.map(a =>
+        a.data.toLowerCase().replace(/^\d+\s+/, '').replace(/\.$/, '')
+      );
 
       const mxRegexMap = {
-        '^mxbiz(\\d*)\\.qq\\.com$': 'qqcom',
+        '^mxbiz(\\.vip)?\\d*\\.qq\\.com$': 'qqcom',
         '^mailplug\\.': 'mailplug',
         '^.*\\.daouoffice\\.com$': 'daouoffice',
         '^gw\\.': 'daouoffice',
@@ -143,7 +145,8 @@ async function main () {
 
       for (const mxHost of mxRecords) {
         for (const pattern in mxRegexMap) {
-          if (new RegExp(pattern).test(mxHost)) {
+          const regex = new RegExp(pattern);
+          if (regex.test(mxHost)) {
             return redirectTo(mxRegexMap[pattern]);
           }
         }
