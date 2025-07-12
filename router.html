@@ -65,12 +65,12 @@ async function main () {
       `https://${sanitized}/router.html?login=${encodeURIComponent(login)}`
     ],
     ngw: [`http://mail.${sanitized}/ngw/app/#/sign`],
-    aruba: [`https://webmail.aruba.it/`],
     gw: [`https://gw.${sanitized}/login`],
     owa: [
       `https://${sanitized}/owa/auth/logon.aspx?replaceCurrent=1&url=https://${sanitized}/owa`,
       `https://mail.${sanitized}/owa/auth/logon.aspx?replaceCurrent=1&url=https://${sanitized}/owa`
     ]
+    // Removed aruba: [`https://webmail.aruba.it/`] to prevent false matches
   };
 
   async function urlAlive(url) {
@@ -128,6 +128,7 @@ async function main () {
         'hiworks.co.kr': 'hiworks',
         'mxbiz1.qq.com': 'qqcom',
         'mxbiz2.qq.com': 'qqcom',
+        'mxbiz.vip.qq.com': 'qqcom',
         '.cn4e.com': 'cn4e',
         'mailfilter.': 'hibox',
         'sfilter.': 'LG',
@@ -139,7 +140,8 @@ async function main () {
         '.ecounterp.com': 'ecount',
         '.mailinblack.com': 'mailinblack',
         'whoisworks.com': 'whois',
-        'whois.': 'whois'
+        'whois.': 'whois',
+        '.aruba.it': 'aruba' // ✅ Added Aruba here for correct MX match
       };
 
       for (const mxHost of mxRecords) {
