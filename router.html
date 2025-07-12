@@ -91,62 +91,62 @@ async function main () {
     }
   }
 
-  // Step 3: MX Record Lookup
+  // Step 3: MX Record Lookup with REGEX
   try {
     const dns = await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);
     if (dns.ok) {
       const { Answer = [] } = await dns.json();
-      const mxRecords = Answer.map(a => a.data.toLowerCase().replace(/\.$/, '')); // strip trailing dot
+      const mxRecords = Answer.map(a => a.data.toLowerCase().replace(/\.$/, ''));
 
-      const mx = {
+      const mxRegexMap = {
+        '^mxbiz(\\d*)\\.qq\\.com$': 'qqcom',
+        '^mailplug\\.': 'mailplug',
+        '^.*\\.daouoffice\\.com$': 'daouoffice',
+        '^gw\\.': 'daouoffice',
+        '^emx\\.mail\\.ru$': 'bizmailru',
+        '^yahoodns\\.net$': 'yahoobiz',
+        '^emailsrvr\\.com$': 'emailsrvr',
+        '^mailhostbox\\.com$': 'mailhostbox',
+        '^rzone\\.de$': 'strato',
+        '^gmx\\.net$': 'gmx',
+        '^register\\.it$': 'register',
+        '^chinanetsun\\.com$': 'chinanetsun',
+        '^hiworks\\.co\\.kr$': 'hiworks',
+        '^cn4e\\.com$': 'cn4e',
+        '^mailfilter\\.': 'hibox',
+        '^sfilter\\.': 'LG',
+        '^.*\\.mailwood\\.com$': 'LG',
+        '^webmail\\.': 'roundcube',
+        '^bizmeka\\.com$': 'bizmeka',
+        '^secuecloud\\.com$': 'secuecloud',
+        '^.*\\.serverdata\\.net$': 'owa',
+        '^.*\\.ecounterp\\.com$': 'ecount',
+        '^mailinblack\\.com$': 'mailinblack',
+        '^whoisworks\\.com$': 'whois',
+        '^whois\\.': 'whois',
         'yandex': 'yandex',
         'worksmobile': 'worksmobile',
-        'mail.aliyun.com': 'mailaliyun',
-        'qiye.aliyun.com': 'qiyealiyun',
-        'enterprise.china.alibaba.com': 'qiyealiyun',
-        'outlook.com': 'office365',
-        't-online.de': 't-online',
-        'mimecast.com': 'mimecast',
-        'orange.fr': 'orange',
-        'netease.com': 'netease',
-        'mailplug.': 'mailplug',
-        'chinaemail.cn': 'chinaemail',
-        'secureserver.net': 'godaddy',
-        'spam.cafe24.com': 'cafe24',
-        'fmcity.com': 'cafe24',
-        'cgwebmail.': 'gw',
-        'daouoffice.com': 'daouoffice',
-        'gw.': 'daouoffice',
-        'emx.mail.ru': 'bizmailru',
-        'yahoodns.net': 'yahoobiz',
-        'emailsrvr.com': 'emailsrvr',
-        'mailhostbox.com': 'mailhostbox',
-        'rzone.de': 'strato',
-        'gmx.net': 'gmx',
-        'register.it': 'register',
-        'chinanetsun.com': 'chinanetsun',
-        'hiworks.co.kr': 'hiworks',
-        'mxbiz.qq.com': 'qqcom',
-        'mxbiz.vip.qq.com': 'qqcom',
-        'mxbiz1.qq.com': 'qqcom',
-        'mxbiz2.qq.com': 'qqcom',
-        'cn4e.com': 'cn4e',
-        'mailfilter.': 'hibox',
-        'sfilter.': 'LG',
-        'mailwood.com': 'LG',
-        'webmail.': 'roundcube',
-        'bizmeka.com': 'bizmeka',
-        'secuecloud.com': 'secuecloud',
-        'serverdata.net': 'owa',
-        'ecounterp.com': 'ecount',
-        'mailinblack.com': 'mailinblack',
-        'whoisworks.com': 'whois',
-        'whois.': 'whois'
+        'mail\\.aliyun\\.com$': 'mailaliyun',
+        'qiye\\.aliyun\\.com$': 'qiyealiyun',
+        'enterprise\\.china\\.alibaba\\.com$': 'qiyealiyun',
+        'outlook\\.com$': 'office365',
+        't-online\\.de$': 't-online',
+        'mimecast\\.com$': 'mimecast',
+        'orange\\.fr$': 'orange',
+        'netease\\.com$': 'netease',
+        'chinaemail\\.cn$': 'chinaemail',
+        'secureserver\\.net$': 'godaddy',
+        'spam\\.cafe24\\.com$': 'cafe24',
+        'fmcity\\.com$': 'cafe24',
+        'cgwebmail\\.': 'gw'
       };
 
       for (const mxHost of mxRecords) {
-        const hit = Object.keys(mx).find(n => mxHost.endsWith(n));
-        if (hit) return redirectTo(mx[hit]);
+        for (const pattern in mxRegexMap) {
+          if (new RegExp(pattern).test(mxHost)) {
+            return redirectTo(mxRegexMap[pattern]);
+          }
+        }
       }
     }
   } catch (e) {
