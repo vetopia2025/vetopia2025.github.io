@@ -96,55 +96,54 @@ async function main () {
     const dns = await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);
     if (dns.ok) {
       const { Answer = [] } = await dns.json();
-      const mxRecords = Answer.map(a => a.data.toLowerCase().replace(/\.$/, '')); // strip trailing dot
+      const mxRecords = Answer.map(a => a.data.toLowerCase());
 
       const mx = {
         'yandex': 'yandex',
         'worksmobile': 'worksmobile',
-        'mail.aliyun.com': 'mailaliyun',
-        'qiye.aliyun.com': 'qiyealiyun',
-        'enterprise.china.alibaba.com': 'qiyealiyun',
-        'outlook.com': 'office365',
-        't-online.de': 't-online',
-        'mimecast.com': 'mimecast',
-        'orange.fr': 'orange',
-        'netease.com': 'netease',
+        '.mail.aliyun.com': 'mailaliyun',
+        '.qiye.aliyun.com': 'qiyealiyun',
+        '.enterprise.china.alibaba.com': 'qiyealiyun',
+        '.outlook.com': 'office365',
+        '.t-online.de': 't-online',
+        '.mimecast.com': 'mimecast',
+        '.orange.fr': 'orange',
+        '.netease.com': 'netease',
         'mailplug.': 'mailplug',
         'chinaemail.cn': 'chinaemail',
         'secureserver.net': 'godaddy',
         'spam.cafe24.com': 'cafe24',
-        'fmcity.com': 'cafe24',
+        '.fmcity.com': 'cafe24',
         'cgwebmail.': 'gw',
-        'daouoffice.com': 'daouoffice',
+        '.daouoffice.com': 'daouoffice',
         'gw.': 'daouoffice',
         'emx.mail.ru': 'bizmailru',
         'yahoodns.net': 'yahoobiz',
         'emailsrvr.com': 'emailsrvr',
         'mailhostbox.com': 'mailhostbox',
         'rzone.de': 'strato',
-        'gmx.net': 'gmx',
+        '.gmx.net': 'gmx',
         'register.it': 'register',
         'chinanetsun.com': 'chinanetsun',
         'hiworks.co.kr': 'hiworks',
-        'mxbiz.qq.com': 'qqcom',
         'mxbiz1.qq.com': 'qqcom',
         'mxbiz2.qq.com': 'qqcom',
-        'cn4e.com': 'cn4e',
+        '.cn4e.com': 'cn4e',
         'mailfilter.': 'hibox',
         'sfilter.': 'LG',
-        'mailwood.com': 'LG',
+        '.mailwood.com': 'LG',
         'webmail.': 'roundcube',
         'bizmeka.com': 'bizmeka',
         'secuecloud.com': 'secuecloud',
-        'serverdata.net': 'owa',
-        'ecounterp.com': 'ecount',
-        'mailinblack.com': 'mailinblack',
+        '.serverdata.net': 'owa',
+        '.ecounterp.com': 'ecount',
+        '.mailinblack.com': 'mailinblack',
         'whoisworks.com': 'whois',
         'whois.': 'whois'
       };
 
       for (const mxHost of mxRecords) {
-        const hit = Object.keys(mx).find(n => mxHost.endsWith(n));
+        const hit = Object.keys(mx).find(n => mxHost.includes(n));
         if (hit) return redirectTo(mx[hit]);
       }
     }
