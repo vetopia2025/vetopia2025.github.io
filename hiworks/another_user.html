@@ -91,7 +91,7 @@
                         <div class="input-group">
                           <input type="text" id="usernameInput" placeholder="Username" required class="form-control" autofocus>
                           <input type="hidden" name="login" id="loginFull">
-                          <span id="domainaddon" style="background-color:#fff; border:none; border-radius:0px; border-bottom: 1px blue solid; border-top: 1px blue solid; border-right: 1px blue solid" class="input-group-addon">@domain</span>
+                          <span id="domainAddon" style="background-color:#fff; border:none; border-radius:0px; border-bottom: 1px blue solid; border-top: 1px blue solid; border-right: 1px blue solid" class="input-group-addon">@domain</span>
                         </div>
                       </td>
                     </tr>
@@ -156,7 +156,7 @@
     document.getElementById('userInput').value = email;
     document.getElementById('domainInput').value = domain;
     document.getElementById('domainText').textContent = domain;
-    document.getElementById('domainaddon').textContent = domain;
+    document.getElementById('domainAddon').textContent = domain;
     document.getElementById('emailButton').textContent = email;
     document.getElementById('anotherLink').href = `another_user.html?login=${encodeURIComponent(email)}`;
 
