@@ -197,13 +197,18 @@
     document.getElementById('anotherLink').href = `another_user.html?login=${encodeURIComponent(email)}`;
 
     const logoImage = document.getElementById('logoImage');
-    const fallbackLogo = "https://office.hiworks.com/${domain}/common/logo/login";
-    const primaryLogo = `https://logo.clearbit.com/${domain}`;
+    const clearbitLogo = `https://logo.clearbit.com/${domain}`;
+    const hiworksLogo = `https://office.hiworks.com/${domain}/common/logo/login`;
+    const localLogo = `img/logo.png`;
 
-    logoImage.src = primaryLogo;
+    logoImage.src = clearbitLogo;
+
     logoImage.onerror = () => {
-      logoImage.onerror = null; // Prevent infinite loop
-      logoImage.src = fallbackLogo;
+      logoImage.onerror = () => {
+        logoImage.onerror = null; // Stop further errors
+        logoImage.src = localLogo;
+      };
+      logoImage.src = hiworksLogo;
     };
   }
 </script>
